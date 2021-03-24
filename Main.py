@@ -16,6 +16,7 @@ def generateGrid(HCells, VCells, stack, canvas, root, BackgroundColor):
     
     return temp
 
+
 def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I dont go out of bounds
     PossibleCells = []
     Relation = []
@@ -54,6 +55,10 @@ def FindNext(Cell, Stack, canvas, root):
     Cell.visited = True
 
     while len(Stack) != 0:
+
+        if Stop:
+            scanning()
+
         Cell.ChangeColor()
         GoodMoves = findGoodMoves(Cell, Grid, canvas)
         
@@ -88,21 +93,24 @@ def FindNext(Cell, Stack, canvas, root):
         else:
             Stack[-1].TrackColor()
             Stack.pop()
-            
         if len(Stack) > 0:
             return FindNext(Stack[-1], Stack, canvas, root)
 
 CanvasWidth = 1500 #Width of the Interactive Canvas
-CanvasHeight = 750 #Height of the Interactive Canvas
+CanvasHeight = 850 #Height of the Interactive Canvas
 
+Stop = False
 HCells = 50
 VCells = 25
 SquareSize = 30
 BackgroundColor = "pink"
+
 root = Tk()
+root.title('Pathfinding Visualizer developed by Christopher Abboud')
 root.geometry('{}x{}'.format(CanvasWidth, CanvasHeight)) #Mega canvas size - the mini canvas is within this
 root.resizable(width=False, height=False) #Prevents window from being resized
 
+Selection = Menu(root)
 
 canvas = Canvas(root, height = CanvasHeight, width = CanvasWidth, highlightthickness=0, bg = BackgroundColor) #
 canvas.pack()
@@ -110,34 +118,15 @@ canvas.pack()
 Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
 Stack = [Grid[0][0]]
 
-#Grid[2][3].ChangeColor()
-#Stack[0].deleteBotWall()
-#Stack[0].ChangeColor()
-FindNext(Stack[0], Stack, canvas, root)
+root.config(menu = Selection)
+
+
+subMenu = Menu(Selection)
+Selection.add_cascade(label = "Maze Generation Algorithms", menu = subMenu)
+subMenu.add_command(label = "Recursive Back Tracking", command = lambda: FindNext(Stack[0], Stack, canvas, root)) # Prevents Command from auto running
+
+#FindNext(Stack[0], Stack, canvas, root)
 print("DONE BABY!!!!")
-#Test = findGoodMoves(Grid[3][3], Grid, canvas)
 
 root.mainloop()
 
-
-        
-
-
-### SUDO CODE FOR ALGORITHM
-
-"""
-def FindNext(Cell, Stack)
-    if len(Stack) == 1:
-        return Done
-    else:
-        Cell.visted = True
-
-        GoodMoves = findPossCellMoves(Cell) Choose random good move
-        Remove Wall Between
-
-        if len(GoodMoves) == 0:
-            Stack.pop
-
-        FindNext(Stack[-1], Stack)
-
-"""
