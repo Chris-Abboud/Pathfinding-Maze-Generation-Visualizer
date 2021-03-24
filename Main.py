@@ -26,8 +26,27 @@ root.resizable(width=False, height=False) #Prevents window from being resized
 canvas = Canvas(root, height = CanvasHeight, width = CanvasWidth, highlightthickness=0, bg = BackgroundColor) #
 canvas.pack()
 
-Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) # Generates Grid 10x20
+Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
 
 
 root.mainloop()
 
+
+### SUDO CODE FOR ALGORITHM
+
+"""
+def FindNext(Cell, Stack)
+    if len(Stack) == 1:
+        return Done
+    else:
+        Cell.visted = True
+
+        GoodMoves = findPossCellMoves(Cell) Choose random good move
+        Remove Wall Between
+
+        if len(GoodMoves) == 0:
+            Stack.pop
+
+        FindNext(Stack[-1], Stack)
+
+"""
