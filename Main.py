@@ -1,6 +1,7 @@
 ## Initially building the Recursive Backtracking Algorithm for maze generation
 from tkinter import *
 from Cells import *
+import random
 
 def generateGrid(HCells, VCells, stack, canvas, root, BackgroundColor):
     temp = [[0]*HCells for pos in range(VCells)] #Has to be 2D Array to allow for the finding of left, right, top, bot to be very efficient
@@ -10,6 +11,74 @@ def generateGrid(HCells, VCells, stack, canvas, root, BackgroundColor):
             temp[i][j] = Cell(j ,i, canvas, SquareSize, root, BackgroundColor) #The Cell class will automatically draw the squares
     
     return temp
+
+def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I dont go out of bounds
+    PossibleCells = []
+    Relation = []
+
+    CurrX = Cell.x
+    CurrY = Cell.y
+    HCells = len(Grid[0]) - 1 #Works with Index rather than length
+    VCells = len(Grid) - 1
+
+    if (CurrX >= 0 and CurrX < HCells): #Restricts the horizontal bounds
+        if not Grid[CurrY][CurrX+1].visited: #Checks Right Cell
+            PossibleCells.append(Grid[CurrY][CurrX+1])
+            Relation.append("Right") #Indicates the Right Cell was a free cell
+
+    if (CurrX >= 1 and CurrX <= HCells): #Restricts the horizontal bounds
+        if not Grid[CurrY][CurrX-1].visited:#Checks Left Value
+            PossibleCells.append(Grid[CurrY][CurrX-1]) 
+            Relation.append("Left") #Indicates the Left Cell was a free cell
+
+    if (CurrY >= 0 and CurrY < VCells):
+        if not Grid[CurrY+1][CurrX].visited:
+            PossibleCells.append(Grid[CurrY+1][CurrX]) #Checks Buttom Cell
+            Relation.append("Bot") #Indicates the Bottom Cell was a free cell
+
+    if (CurrY > 0 and CurrY <= VCells):
+        if not Grid[CurrY-1][CurrX].visited:
+            PossibleCells.append(Grid[CurrY-1][CurrX]) #Checks Top Value
+            Relation.append("Top") #Indicates the Top Cell was a free Cell
+
+    #for thing in PossibleCells: # Changes Color of available Cells, for debugging purposes
+       # thing.ChangeColor()
+
+    return tuple(zip(PossibleCells, Relation)) #Combines 2 lists to a list of tuples
+
+def FindNext(Cell, Stack, canvas, root):
+    if len(Stack) == 0:
+        print("I'm done baby")
+    else:
+        Cell.visited = True
+        GoodMoves = findGoodMoves(Cell, Grid, canvas)
+        
+
+        if (len(GoodMoves) > 0):
+            RandoCell = random.randint(0,len(GoodMoves) - 1)
+            print(RandoCell)
+            ChosenCombo = GoodMoves[RandoCell] # Will be in form (Cell, Location relative to original)
+
+        if (len(GoodMoves) > 0):
+            ChosenCell = ChosenCombo[0]
+
+            if ChosenCombo[1] == "Top":
+                Cell.deleteTopWall()
+            if ChosenCombo[1] == "Bot":
+                Cell.deleteBotWall()
+            if ChosenCombo[1] == "Left":
+                Cell.deleteLeftWall()
+            if ChosenCombo[1] == "Right":
+                Cell.deleteRightWall()
+
+            Stack.append(ChosenCell)
+            ChosenCell.ChangeColor()
+            root.after(100, canvas.update())
+            
+        else:
+            Stack.pop()
+
+        FindNext(Stack[-1], Stack, canvas, root)
 
 CanvasWidth = 1500 #Width of the Interactive Canvas
 CanvasHeight = 750 #Height of the Interactive Canvas
@@ -27,9 +96,15 @@ canvas = Canvas(root, height = CanvasHeight, width = CanvasWidth, highlightthick
 canvas.pack()
 
 Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
+Stack = [Grid[0][0]]
 
+FindNext(Stack[0], Stack, canvas, root)
+#Test = findGoodMoves(Grid[3][3], Grid, canvas)
 
 root.mainloop()
+
+
+        
 
 
 ### SUDO CODE FOR ALGORITHM

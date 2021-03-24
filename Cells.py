@@ -19,10 +19,13 @@ class Cell():
         self.WallLeft = False
         self.WallRight = False
     
+    def ChangeColor(self):
+        self.canvas.itemconfig(self.SquareCell, fill = "Blue")
+
     def deleteTopWall(self):
         self.canvas.itemconfig(self.topWall, fill = self.color)
     
-    def deleteBopWall(self):
+    def deleteBotWall(self):
         self.canvas.itemconfig(self.botWall, fill = self.color)
     
     def deleteRightWall(self):
