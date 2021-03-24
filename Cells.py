@@ -5,11 +5,12 @@ class Cell():
         self.y = y #Y cordinate
         self.color = color
         self.canvas = canvas
+        self.root = root
 
         #Had to create properties for each  wall so that removing a wall is an easy operation
         self.SquareCell = canvas.create_rectangle(x * SquareSize, y * SquareSize, (x+1) * SquareSize, (y+1) * SquareSize, outline = "") 
-        self.topWall = canvas.create_line(x * SquareSize, y * SquareSize, (x + 1) * SquareSize, y * SquareSize, fill = "Black")
-        self.botWall = canvas.create_line(x * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = "Black")
+        self.topWall = canvas.create_line(x * SquareSize, y * SquareSize, (x + 1) * SquareSize + 1, y * SquareSize, fill = "Black")
+        self.botWall = canvas.create_line(x * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize + 1, (y + 1) * SquareSize, fill = "Black")
         self.leftWall = canvas.create_line(x * SquareSize, y * SquareSize, x * SquareSize, (y + 1) * SquareSize, fill = "Black")
         self.rightWall = canvas.create_line((x + 1) * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = "Black")
         #root.after(1, canvas.update()) #Adds a delay of 1 between each run through, this is just for debugging
@@ -20,16 +21,26 @@ class Cell():
         self.WallRight = False
     
     def ChangeColor(self):
+        self.canvas.itemconfig(self.SquareCell, fill = "White")
+
+    def TrackColor(self):
         self.canvas.itemconfig(self.SquareCell, fill = "Blue")
+        self.root.after(3, self.canvas.update())
+        self.canvas.itemconfig(self.SquareCell, fill = "White")
+        
 
     def deleteTopWall(self):
-        self.canvas.itemconfig(self.topWall, fill = self.color)
+        #self.canvas.itemconfig(self.topWall, fill = "White")
+        self.canvas.delete(self.topWall)
     
     def deleteBotWall(self):
-        self.canvas.itemconfig(self.botWall, fill = self.color)
+        #self.canvas.itemconfig(self.botWall, fill = "White")
+        self.canvas.delete(self.botWall)
     
     def deleteRightWall(self):
-        self.canvas.itemconfig(self.rightWall, fill = self.color)
+        #self.canvas.itemconfig(self.rightWall, fill = "White")
+        self.canvas.delete(self.rightWall)
     
     def deleteLeftWall(self):
-        self.canvas.itemconfig(self.leftWall, fill = self.color)
+        #self.canvas.itemconfig(self.leftWall, fill = "White")
+        self.canvas.delete(self.leftWall)

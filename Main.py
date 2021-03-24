@@ -2,6 +2,10 @@
 from tkinter import *
 from Cells import *
 import random
+import sys
+
+
+sys.setrecursionlimit(10**6)
 
 def generateGrid(HCells, VCells, stack, canvas, root, BackgroundColor):
     temp = [[0]*HCells for pos in range(VCells)] #Has to be 2D Array to allow for the finding of left, right, top, bot to be very efficient
@@ -47,16 +51,15 @@ def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I do
     return tuple(zip(PossibleCells, Relation)) #Combines 2 lists to a list of tuples
 
 def FindNext(Cell, Stack, canvas, root):
-    if len(Stack) == 0:
-        print("I'm done baby")
-    else:
-        Cell.visited = True
+    Cell.visited = True
+
+    while len(Stack) != 0:
+        Cell.ChangeColor()
         GoodMoves = findGoodMoves(Cell, Grid, canvas)
         
 
         if (len(GoodMoves) > 0):
             RandoCell = random.randint(0,len(GoodMoves) - 1)
-            print(RandoCell)
             ChosenCombo = GoodMoves[RandoCell] # Will be in form (Cell, Location relative to original)
 
         if (len(GoodMoves) > 0):
@@ -64,21 +67,30 @@ def FindNext(Cell, Stack, canvas, root):
 
             if ChosenCombo[1] == "Top":
                 Cell.deleteTopWall()
+                ChosenCell.deleteBotWall()
+
             if ChosenCombo[1] == "Bot":
                 Cell.deleteBotWall()
+                ChosenCell.deleteTopWall()
+
             if ChosenCombo[1] == "Left":
                 Cell.deleteLeftWall()
+                ChosenCell.deleteRightWall()
+
             if ChosenCombo[1] == "Right":
                 Cell.deleteRightWall()
+                ChosenCell.deleteLeftWall()
 
             Stack.append(ChosenCell)
-            ChosenCell.ChangeColor()
-            root.after(100, canvas.update())
+            root.after(1, canvas.update())
+            
             
         else:
+            Stack[-1].TrackColor()
             Stack.pop()
-
-        FindNext(Stack[-1], Stack, canvas, root)
+            
+        if len(Stack) > 0:
+            return FindNext(Stack[-1], Stack, canvas, root)
 
 CanvasWidth = 1500 #Width of the Interactive Canvas
 CanvasHeight = 750 #Height of the Interactive Canvas
@@ -98,7 +110,11 @@ canvas.pack()
 Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
 Stack = [Grid[0][0]]
 
+#Grid[2][3].ChangeColor()
+#Stack[0].deleteBotWall()
+#Stack[0].ChangeColor()
 FindNext(Stack[0], Stack, canvas, root)
+print("DONE BABY!!!!")
 #Test = findGoodMoves(Grid[3][3], Grid, canvas)
 
 root.mainloop()
