@@ -2,17 +2,19 @@
 from tkinter import *
 from Cells import *
 import random
+import config
+
 import sys
 
 
 sys.setrecursionlimit(10**6)
 
 def generateGrid(HCells, VCells, stack, canvas, root, BackgroundColor):
-    temp = [[0]*HCells for pos in range(VCells)] #Has to be 2D Array to allow for the finding of left, right, top, bot to be very efficient
+    temp = [[0]*config.HCells for pos in range(config.VCells)] #Has to be 2D Array to allow for the finding of left, right, top, bot to be very efficient
 
-    for i in range(VCells):
-        for j in range(HCells):
-            temp[i][j] = Cell(j ,i, canvas, SquareSize, root, BackgroundColor) #The Cell class will automatically draw the squares
+    for i in range(config.VCells):
+        for j in range(config.HCells):
+            temp[i][j] = Cell(j ,i, canvas, config.SquareSize, root, config.BackgroundColor) #The Cell class will automatically draw the squares
     
     return temp
 
@@ -56,9 +58,6 @@ def FindNext(Cell, Stack, canvas, root):
 
     while len(Stack) != 0:
 
-        if Stop:
-            scanning()
-
         Cell.ChangeColor()
         GoodMoves = findGoodMoves(Cell, Grid, canvas)
         
@@ -99,31 +98,21 @@ def FindNext(Cell, Stack, canvas, root):
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
     global Grid
     global Stack
-    
+
     Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
     Stack = [Grid[0][0]]
 
-    
-CanvasWidth = 1500 #Width of the Interactive Canvas
-CanvasHeight = 850 #Height of the Interactive Canvas
-
-Stop = False
-HCells = 50
-VCells = 25
-SquareSize = 30
-BackgroundColor = "pink"
-
 root = Tk()
 root.title('Pathfinding Visualizer developed by Christopher Abboud')
-root.geometry('{}x{}'.format(CanvasWidth, CanvasHeight)) #Mega canvas size - the mini canvas is within this
+root.geometry('{}x{}'.format(config.CanvasWidth, config.CanvasHeight)) #Mega canvas size - the mini canvas is within this
 root.resizable(width=False, height=False) #Prevents window from being resized
 
 Selection = Menu(root)
 
-canvas = Canvas(root, height = CanvasHeight, width = CanvasWidth, highlightthickness=0, bg = BackgroundColor) #
+canvas = Canvas(root, height = config.CanvasHeight, width = config.CanvasWidth, highlightthickness=0, bg = config.BackgroundColor) #
 canvas.pack()
 
-Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
+Grid = generateGrid(config.HCells, config.VCells, [], canvas, root, config.BackgroundColor) ## This will be used in the findPossibleMoves Method
 Stack = [Grid[0][0]]
 
 root.config(menu = Selection)
@@ -131,7 +120,7 @@ root.config(menu = Selection)
 
 subMenu = Menu(Selection)
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = subMenu)
-Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(HCells, VCells, [], canvas, root, BackgroundColor))
+Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(config.HCells, config.VCells, [], canvas, root, config.BackgroundColor))
 subMenu.add_command(label = "Recursive Back Tracking", command = lambda: FindNext(Stack[0], Stack, canvas, root)) # Prevents Command from auto running
 
 #FindNext(Stack[0], Stack, canvas, root)
