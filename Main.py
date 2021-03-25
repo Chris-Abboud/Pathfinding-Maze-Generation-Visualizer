@@ -3,7 +3,7 @@ from tkinter import *
 from Cells import *
 import random
 import config
-
+import time
 import sys
 
 
@@ -54,57 +54,80 @@ def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I do
     return tuple(zip(PossibleCells, Relation)) #Combines 2 lists to a list of tuples
 
 def FindNext(Cell, Stack, canvas, root):
-    Cell.visited = True
+    pauseStall(root)
 
-    while len(Stack) != 0:
+    if config.AlgoWorking:
+        Cell.visited = True
 
-        Cell.ChangeColor()
-        GoodMoves = findGoodMoves(Cell, Grid, canvas)
-        
+        while len(Stack) != 0:
 
-        if (len(GoodMoves) > 0):
-            RandoCell = random.randint(0,len(GoodMoves) - 1)
-            ChosenCombo = GoodMoves[RandoCell] # Will be in form (Cell, Location relative to original)
-
-        if (len(GoodMoves) > 0):
-            ChosenCell = ChosenCombo[0]
-
-            if ChosenCombo[1] == "Top":
-                Cell.deleteTopWall()
-                ChosenCell.deleteBotWall()
-
-            if ChosenCombo[1] == "Bot":
-                Cell.deleteBotWall()
-                ChosenCell.deleteTopWall()
-
-            if ChosenCombo[1] == "Left":
-                Cell.deleteLeftWall()
-                ChosenCell.deleteRightWall()
-
-            if ChosenCombo[1] == "Right":
-                Cell.deleteRightWall()
-                ChosenCell.deleteLeftWall()
-
-            Stack.append(ChosenCell)
-            root.after(1, canvas.update())
+            Cell.ChangeColor()
+            GoodMoves = findGoodMoves(Cell, Grid, canvas)
             
-            
-        else:
-            Stack[-1].TrackColor()
-            Stack.pop()
-        if len(Stack) > 0:
-            return FindNext(Stack[-1], Stack, canvas, root)
+
+            if (len(GoodMoves) > 0):
+                RandoCell = random.randint(0,len(GoodMoves) - 1)
+                ChosenCombo = GoodMoves[RandoCell] # Will be in form (Cell, Location relative to original)
+
+            if (len(GoodMoves) > 0):
+                ChosenCell = ChosenCombo[0]
+
+                if ChosenCombo[1] == "Top":
+                    Cell.deleteTopWall()
+                    ChosenCell.deleteBotWall()
+
+                if ChosenCombo[1] == "Bot":
+                    Cell.deleteBotWall()
+                    ChosenCell.deleteTopWall()
+
+                if ChosenCombo[1] == "Left":
+                    Cell.deleteLeftWall()
+                    ChosenCell.deleteRightWall()
+
+                if ChosenCombo[1] == "Right":
+                    Cell.deleteRightWall()
+                    ChosenCell.deleteLeftWall()
+
+                Stack.append(ChosenCell)
+                root.after(1, canvas.update())
+                
+                
+            else:
+                Stack[-1].TrackColor()
+                Stack.pop()
+            if len(Stack) > 0:
+                return FindNext(Stack[-1], Stack, canvas, root)
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
     global Grid
     global Stack
 
-    Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
-    Stack = [Grid[0][0]]
+    if config.pausePlay:
+        Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
+        Stack = [Grid[0][0]]
+        config.AlgoWorking = False
+        config.pausePlay = False
+
+def RecursiveBackTrackButton(First, Stack, canvas, root):
+    config.AlgoWorking = True
+    FindNext(First, Stack, canvas, root)
+    config.AlgoWorking = False
+
+def pausePlay():
+    if config.AlgoWorking == True:
+        config.pausePlay = not config.pausePlay
+    else:
+        config.pausePlay = False
+
+    print(config.pausePlay)
+
+def pauseStall(root):
+    while config.pausePlay:
+        root.after(50, canvas.update())
 
 root = Tk()
 root.title('Pathfinding Visualizer developed by Christopher Abboud')
-root.geometry('{}x{}'.format(config.CanvasWidth, config.CanvasHeight + 100)) #Mega canvas size - the mini canvas is within this
+root.geometry('{}x{}'.format(config.CanvasWidth, config.CanvasHeight + config.BottomButtonSpace)) #Mega canvas size - the mini canvas is within this
 root.resizable(width=False, height=False) #Prevents window from being resized
 
 Selection = Menu(root)
@@ -121,7 +144,8 @@ root.config(menu = Selection)
 subMenu = Menu(Selection)
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = subMenu)
 Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(config.HCells, config.VCells, [], canvas, root, config.BackgroundColor))
-subMenu.add_command(label = "Recursive Back Tracking", command = lambda: FindNext(Stack[0], Stack, canvas, root)) # Prevents Command from auto running
+Selection.add_cascade(label = "Pause / Play button", command = pausePlay)
+subMenu.add_command(label = "Recursive Back Tracking", command = lambda: RecursiveBackTrackButton(Stack[0], Stack, canvas, root)) # Prevents Command from auto running
 
 #FindNext(Stack[0], Stack, canvas, root)
 print("DONE BABY!!!!")

@@ -1,1 +1,2 @@
- + 1
+pauseStall(root)
+    if config.AlgoWorking:
