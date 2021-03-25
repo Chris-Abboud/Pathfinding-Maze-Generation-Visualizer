@@ -6,7 +6,6 @@ import config
 import time
 import sys
 
-
 sys.setrecursionlimit(10**6)
 
 def generateGrid(HCells, VCells, stack, canvas, root, BackgroundColor):
@@ -54,9 +53,8 @@ def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I do
     return tuple(zip(PossibleCells, Relation)) #Combines 2 lists to a list of tuples
 
 def FindNext(Cell, Stack, canvas, root):
-    pauseStall(root)
-
-    if config.AlgoWorking:
+    pauseStall(root) #Checks if pause is active, ifso, will freeze program until otherwise
+    if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
         Cell.visited = True
 
         while len(Stack) != 0:
@@ -90,8 +88,6 @@ def FindNext(Cell, Stack, canvas, root):
 
                 Stack.append(ChosenCell)
                 root.after(1, canvas.update())
-                
-                
             else:
                 Stack[-1].TrackColor()
                 Stack.pop()
@@ -102,7 +98,7 @@ def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
     global Grid
     global Stack
 
-    if config.pausePlay:
+    if config.pausePlay or (config.AlgoWorking == False and config.pausePlay == False):
         Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
         Stack = [Grid[0][0]]
         config.AlgoWorking = False
@@ -119,11 +115,9 @@ def pausePlay():
     else:
         config.pausePlay = False
 
-    print(config.pausePlay)
-
 def pauseStall(root):
     while config.pausePlay:
-        root.after(50, canvas.update())
+        root.after(50, canvas.update()) #Every 50 milisecond will check of PausePlay has changed
 
 root = Tk()
 root.title('Pathfinding Visualizer developed by Christopher Abboud')
@@ -144,11 +138,8 @@ root.config(menu = Selection)
 subMenu = Menu(Selection)
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = subMenu)
 Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(config.HCells, config.VCells, [], canvas, root, config.BackgroundColor))
-Selection.add_cascade(label = "Pause / Play button", command = pausePlay)
+Selection.add_cascade(label = "Pause / Play", command = pausePlay)
 subMenu.add_command(label = "Recursive Back Tracking", command = lambda: RecursiveBackTrackButton(Stack[0], Stack, canvas, root)) # Prevents Command from auto running
-
-#FindNext(Stack[0], Stack, canvas, root)
-print("DONE BABY!!!!")
 
 root.mainloop()
 
