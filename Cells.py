@@ -8,7 +8,7 @@ class Cell():
         self.root = root
 
         #Had to create properties for each  wall so that removing a wall is an easy operation
-        self.SquareCell = canvas.create_rectangle(x * SquareSize, y * SquareSize, (x+1) * SquareSize, (y+1) * SquareSize, outline = "") 
+        self.SquareCell = canvas.create_rectangle(x * SquareSize, y * SquareSize, (x+1) * SquareSize, (y+1) * SquareSize, fill = color, outline = "") 
         self.topWall = canvas.create_line(x * SquareSize, y * SquareSize, (x + 1) * SquareSize + 1, y * SquareSize, fill = "Black")
         self.botWall = canvas.create_line(x * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize + 1, (y + 1) * SquareSize, fill = "Black")
         self.leftWall = canvas.create_line(x * SquareSize, y * SquareSize, x * SquareSize, (y + 1) * SquareSize, fill = "Black")

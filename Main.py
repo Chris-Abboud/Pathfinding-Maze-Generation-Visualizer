@@ -96,6 +96,14 @@ def FindNext(Cell, Stack, canvas, root):
         if len(Stack) > 0:
             return FindNext(Stack[-1], Stack, canvas, root)
 
+def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
+    global Grid
+    global Stack
+    
+    Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
+    Stack = [Grid[0][0]]
+
+    
 CanvasWidth = 1500 #Width of the Interactive Canvas
 CanvasHeight = 850 #Height of the Interactive Canvas
 
@@ -123,6 +131,7 @@ root.config(menu = Selection)
 
 subMenu = Menu(Selection)
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = subMenu)
+Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(HCells, VCells, [], canvas, root, BackgroundColor))
 subMenu.add_command(label = "Recursive Back Tracking", command = lambda: FindNext(Stack[0], Stack, canvas, root)) # Prevents Command from auto running
 
 #FindNext(Stack[0], Stack, canvas, root)
