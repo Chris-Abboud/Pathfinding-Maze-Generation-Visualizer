@@ -104,12 +104,12 @@ def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
 
 root = Tk()
 root.title('Pathfinding Visualizer developed by Christopher Abboud')
-root.geometry('{}x{}'.format(config.CanvasWidth, config.CanvasHeight)) #Mega canvas size - the mini canvas is within this
+root.geometry('{}x{}'.format(config.CanvasWidth, config.CanvasHeight + 100)) #Mega canvas size - the mini canvas is within this
 root.resizable(width=False, height=False) #Prevents window from being resized
 
 Selection = Menu(root)
 
-canvas = Canvas(root, height = config.CanvasHeight, width = config.CanvasWidth, highlightthickness=0, bg = config.BackgroundColor) #
+canvas = Canvas(root, height = config.CanvasHeight + 1, width = config.CanvasWidth, highlightthickness=0, bg = config.BackgroundColor) # +1 to canvas height for bottom pixel
 canvas.pack()
 
 Grid = generateGrid(config.HCells, config.VCells, [], canvas, root, config.BackgroundColor) ## This will be used in the findPossibleMoves Method

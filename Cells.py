@@ -9,10 +9,10 @@ class Cell():
 
         #Had to create properties for each  wall so that removing a wall is an easy operation
         self.SquareCell = canvas.create_rectangle(x * SquareSize, y * SquareSize, (x+1) * SquareSize, (y+1) * SquareSize, fill = color, outline = "") 
-        self.topWall = canvas.create_line(x * SquareSize, y * SquareSize, (x + 1) * SquareSize + 1, y * SquareSize, fill = "Black")
-        self.botWall = canvas.create_line(x * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize + 1, (y + 1) * SquareSize, fill = "Black")
+        self.topWall = canvas.create_line(x * SquareSize, y * SquareSize, (x + 1) * SquareSize, y * SquareSize, fill = "Black")
+        self.botWall = canvas.create_line(x * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = "Black")
         self.leftWall = canvas.create_line(x * SquareSize, y * SquareSize, x * SquareSize, (y + 1) * SquareSize, fill = "Black")
-        self.rightWall = canvas.create_line((x + 1) * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = "Black")
+        self.rightWall = canvas.create_line((x + 1) * SquareSize, y  * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = "Black")
         #root.after(1, canvas.update()) #Adds a delay of 1 between each run through, this is just for debugging
 
         self.WallUp = False
