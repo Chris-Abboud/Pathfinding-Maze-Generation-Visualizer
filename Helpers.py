@@ -4,7 +4,7 @@ import random
 import time
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
-    if config.pausePlay or (config.AlgoWorking == False and config.pausePlay == False):
+    if config.pausePlay:
         config.Grid = config.generateGrid(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor) ## This will be used in the findPossibleMoves Method
         config.Stack = [config.Grid[0][0]]
 
@@ -85,9 +85,10 @@ def FindNext(Cell, Stack, canvas, root):
                 return FindNext(config.Stack[-1], config.Stack, config.canvas, config.root)
 
 def RecursiveBackTrackButton(First, Stack, canvas, root):
-    config.AlgoWorking = True
-    FindNext(First, config.Stack, config.canvas, config.root)
-    config.AlgoWorking = False
+    if config.AlgoWorking == False:
+        config.AlgoWorking = True
+        FindNext(First, config.Stack, config.canvas, config.root)
+        config.AlgoWorking = False
 
 def pausePlay():
     if config.AlgoWorking == True:

@@ -1,5 +1,5 @@
 ## Initially building the Recursive Backtracking Algorithm for maze generation
-from tkinter import *
+from  tkinter import *
 from Cells import *
 from Helpers import *
 
@@ -23,6 +23,6 @@ MazeMenu.add_command(label = "Recursive Back Tracking", command = lambda: Recurs
 MazeMenu.add_command(label = "Hunt and Kill", command = lambda: HuntAndKillButton())
 
 
-config.root.option_add('*tearOff',FALSE)
+config.root.option_add('*tearOff',False)
 config.root.mainloop()
 
