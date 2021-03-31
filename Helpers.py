@@ -4,7 +4,7 @@ import random
 import time
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
-    if config.pausePlay:
+    if config.pausePlay or (config.AlgoWorking == False and config.pausePlay == False):
         config.Grid = config.generateGrid(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor) ## This will be used in the findPossibleMoves Method
         config.Stack = [config.Grid[0][0]]
 
@@ -42,7 +42,7 @@ def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I do
 
     return tuple(zip(PossibleCells, Relation)) #Combines 2 lists to a list of tuples
 
-def FindNext(Cell, Stack, canvas, root):
+def FindNext(Cell, Stack, canvas, root): #Recursive Back Track Algo
     pauseStall(config.root) #Checks if pause is active, ifso, will freeze program until otherwise
     if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
         Cell.visited = True
@@ -84,10 +84,10 @@ def FindNext(Cell, Stack, canvas, root):
             if len(config.Stack) > 0:
                 return FindNext(config.Stack[-1], config.Stack, config.canvas, config.root)
 
-def RecursiveBackTrackButton(First, Stack, canvas, root):
+def RecursiveBackTrackButton():
     if config.AlgoWorking == False:
         config.AlgoWorking = True
-        FindNext(First, config.Stack, config.canvas, config.root)
+        FindNext(config.Stack[0], config.Stack, config.canvas, config.root)
         config.AlgoWorking = False
 
 def pausePlay():
@@ -96,8 +96,8 @@ def pausePlay():
     else:
         config.pausePlay = False
 
-    print("pausePlay: ", config.pausePlay)
-    print("AlgoWorking: ", config.AlgoWorking)
+    #print("pausePlay: ", config.pausePlay) #For debugging 
+    #print("AlgoWorking: ", config.AlgoWorking) #For debugging
 
 def pauseStall(root):
     while config.pausePlay:
