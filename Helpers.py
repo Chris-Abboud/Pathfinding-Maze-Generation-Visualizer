@@ -2,20 +2,35 @@ from Cells import *
 import config
 import random
 import time
+import math
 
 def adjustSpeed(value):
-    config.Speed = int(value) #By default slider value is a string
+    config.Speed = int(value)
+
+def replaceGrid():
+    config.canvas.delete("all") #Need this to prevent memory leak. Bug where program runs slower after every "clear"
+    for i in range(30):
+        for j in range(60):
+            config.Grid[i][j] = Cell(j ,i, config.canvas, config.SquareSize, config.root, config.BackgroundColor) #The Cell class will automatically draw the squares
+
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
     if config.pausePlay or (config.AlgoWorking == False and config.pausePlay == False):
-        config.Grid = config.generateGrid(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor) ## This will be used in the findPossibleMoves Method
+        replaceGrid() ## This will be used in the findPossibleMoves Method
         config.Stack = [config.Grid[0][0]]
-
         config.AlgoWorking = False
         config.pausePlay = False
 
+def TrackPlacedColor(Cell):
+    if config.Speed != 0 and config.AlgoWorking:
+        config.canvas.itemconfig(Cell.SquareCell, fill = "Orange")
+        config.root.after(config.Speed, config.canvas.update())
+        config.canvas.itemconfig(Cell.SquareCell, fill = "White")
+    else:
+        config.canvas.itemconfig(Cell.SquareCell, fill = "White")
+
 def TrackColor(Cell):
-    if config.Speed > 0:
+    if config.Speed != 0 and config.AlgoWorking:
         config.canvas.itemconfig(Cell.SquareCell, fill = "Blue")
         config.root.after(config.Speed, config.canvas.update())
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
@@ -55,26 +70,28 @@ def openPossibleWall(Cell, Possibilities): #Opens random wall and returns the ce
     RandoCell = random.randint(0,len(Possibilities) - 1)
     ChosenCombo = Possibilities[RandoCell]
 
-    if (len(Possibilities) > 0):
-                ChosenCell = ChosenCombo[0]
+    if config.AlgoWorking:
+        if (len(Possibilities) > 0):
+            ChosenCell = ChosenCombo[0]
 
-                if ChosenCombo[1] == "Top":
-                    Cell.deleteTopWall()
-                    ChosenCell.deleteBotWall()
+            if ChosenCombo[1] == "Top":
+                Cell.deleteTopWall()
+                ChosenCell.deleteBotWall()
 
-                if ChosenCombo[1] == "Bot":
-                    Cell.deleteBotWall()
-                    ChosenCell.deleteTopWall()
+            if ChosenCombo[1] == "Bot":
+                Cell.deleteBotWall()
+                ChosenCell.deleteTopWall()
 
-                if ChosenCombo[1] == "Left":
-                    Cell.deleteLeftWall()
-                    ChosenCell.deleteRightWall()
+            if ChosenCombo[1] == "Left":
+                Cell.deleteLeftWall()
+                ChosenCell.deleteRightWall()
 
-                if ChosenCombo[1] == "Right":
-                    Cell.deleteRightWall()
-                    ChosenCell.deleteLeftWall()
+            if ChosenCombo[1] == "Right":
+                Cell.deleteRightWall()
+                ChosenCell.deleteLeftWall()
     
-    return ChosenCell
+            return ChosenCell
+    return None
 
 def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I dont go out of bounds
     PossibleCells = []
@@ -111,14 +128,11 @@ def FindNext(Cell, Stack, canvas, root): #Recursive Back Track Algo
     pauseStall(config.root) #Checks if pause is active, ifso, will freeze program until otherwise
     if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
         Cell.visited = True
-
         while len(config.Stack) != 0:
-
-            Cell.ChangeColor()
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
-            
 
             if (len(GoodMoves) > 0):
+                TrackPlacedColor(Cell)
                 ChosenCell = openPossibleWall(Cell, GoodMoves)
                 config.Stack.append(ChosenCell)
                 config.root.after(config.Speed, config.canvas.update())
@@ -137,27 +151,30 @@ def RecursiveBackTrackButton():
 def HuntAndKill(row, Cell, canvas, root):
 
     Finished = False
-    while not Finished:
-        pauseStall(config.root) #Pause / Play Mechanism
-        Cell.visited = True
-        Cell.ChangeColor()
-        GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
 
-        if (len(GoodMoves) > 0): #If It can keep finding new move
+    if config.AlgoWorking:
+        while not Finished and config.AlgoWorking:
+            Cell.visited = True
+            TrackPlacedColor(Cell)
+            pauseStall(config.root) #Pause / Play Mechanism
+
+            GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
+
+            if (len(GoodMoves) > 0): #If It can keep finding new move
                 ChosenCell = openPossibleWall(Cell, GoodMoves) #Will open possible wall and return the wall it opened
                 config.root.after(config.Speed, config.canvas.update()) #Slows down the visual
                 Cell = ChosenCell #Reassigns new cell, will keep looping until it hits dead end
-        else: #Else we hunt for a new cell
-            for i in range (row, len(config.Grid)): #Added row so it does not have to start from the 0'th row everytime
-                for j in range(len(config.Grid[0])):
-                    pauseStall(config.root)
-                    TrackColor(config.Grid[i][j]) #Shows Left to Right scanning
-                    if config.Grid[i][j].visited == False: #Stops when it hits new Node
-                        BadMoves = findBadMoves(config.Grid[i][j], config.Grid, config.canvas)
-                        openPossibleWall(config.Grid[i][j], BadMoves) #Opens a visited wall, calls hunt kill again on the cell just created
-                        return HuntAndKill(i, config.Grid[i][j], config.canvas, config.root) #Feed in I which is the row we left off at
-                    else:
-                        Finished = True
+            else: #Else we hunt for a new cell
+                for i in range (row, len(config.Grid)): #Added row so it does not have to start from the 0'th row everytime
+                    for j in range(len(config.Grid[0])):
+                        pauseStall(config.root)
+                        TrackColor(config.Grid[i][j]) #Shows Left to Right scanning
+                        if config.Grid[i][j].visited == False: #Stops when it hits new Node
+                            BadMoves = findBadMoves(config.Grid[i][j], config.Grid, config.canvas)
+                            openPossibleWall(config.Grid[i][j], BadMoves) #Opens a visited wall, calls hunt kill again on the cell just created
+                            return HuntAndKill(i, config.Grid[i][j], config.canvas, config.root) #Feed in I which is the row we left off at
+                        else:
+                            Finished = True
 
 def HuntAndKillButton():
     if config.AlgoWorking == False:
