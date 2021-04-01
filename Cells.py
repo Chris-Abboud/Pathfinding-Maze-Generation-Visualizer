@@ -25,7 +25,7 @@ class Cell():
 
     def TrackColor(self):
         self.canvas.itemconfig(self.SquareCell, fill = "Blue")
-        self.root.after(3, self.canvas.update())
+        self.root.after(1, self.canvas.update())
         self.canvas.itemconfig(self.SquareCell, fill = "White")
         
 
