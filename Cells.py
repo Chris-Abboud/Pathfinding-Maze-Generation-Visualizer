@@ -22,13 +22,7 @@ class Cell():
     
     def ChangeColor(self):
         self.canvas.itemconfig(self.SquareCell, fill = "White")
-
-    def TrackColor(self):
-        self.canvas.itemconfig(self.SquareCell, fill = "Blue")
-        self.root.after(1, self.canvas.update())
-        self.canvas.itemconfig(self.SquareCell, fill = "White")
-        
-
+    
     def deleteTopWall(self):
         #self.canvas.itemconfig(self.topWall, fill = "White")
         self.canvas.delete(self.topWall)
