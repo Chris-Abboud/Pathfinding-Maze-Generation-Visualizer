@@ -5,6 +5,7 @@ import time
 
 def adjustSpeed(value):
     config.Speed = value
+    print(config.Speed)
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
     if config.pausePlay or (config.AlgoWorking == False and config.pausePlay == False):
