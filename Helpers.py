@@ -4,8 +4,7 @@ import random
 import time
 
 def adjustSpeed(value):
-    config.Speed = value
-    print(config.Speed)
+    config.Speed = int(value) #By default slider value is a string
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
     if config.pausePlay or (config.AlgoWorking == False and config.pausePlay == False):
@@ -16,7 +15,7 @@ def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
         config.pausePlay = False
 
 def TrackColor(Cell):
-    if config.Speed != 0:
+    if config.Speed > 0:
         config.canvas.itemconfig(Cell.SquareCell, fill = "Blue")
         config.root.after(config.Speed, config.canvas.update())
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
