@@ -17,8 +17,8 @@ config.root.config(menu = Selection)
 MazeMenu = Menu(Selection, tearoff=False) #Menu for Maze Generation Algorithms
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = MazeMenu)
 Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor))
-Selection.add_cascade(label = "Pause / Play", command = pausePlay)
-
+Selection.add_cascade(label = "Start / Stop", command = pausePlay)
+Selection.add_cascade(label = "Enter Wall Debugger Mode", command = lambda: WallDebugger())
 
 MazeMenu.add_command(label = "Recursive Back Tracking", command = lambda: RecursiveBackTrackButton()) # Prevents Command from auto running
 MazeMenu.add_command(label = "Hunt and Kill", command = lambda: HuntAndKillButton())

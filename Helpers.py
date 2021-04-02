@@ -26,19 +26,25 @@ def TrackPlacedColor(Cell):
         config.canvas.itemconfig(Cell.SquareCell, fill = "Orange")
         config.root.after(config.Speed, config.canvas.update())
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
+        Cell.color = "White"
     else:
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
+        Cell.color = "White"
 
 def TrackColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:
         config.canvas.itemconfig(Cell.SquareCell, fill = "Blue")
         config.root.after(config.Speed, config.canvas.update())
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
+        Cell.color = "White"
 
 def ChangeColorBlue(Cell):
-    if config.AlgoWorking:
+    if config.AlgoWorking or (config.AlgoWorking == False and config.pausePlay == False):
         config.canvas.itemconfig(Cell.SquareCell, fill = "Blue")
+        Cell.color = "Blue"
 
+def DebuggerColorChange(Cell):
+    config.canvas.itemconfig(Cell.SquareCell, fill = "Blue")
 
 def findBadMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I dont go out of bounds
     PossibleCells = []
@@ -216,7 +222,7 @@ def BinaryTreeAlgorithm():
             if len(PossibleMoves) > 0:
                 ChosenCell = openPossibleWall(config.Grid[i][j], PossibleMoves)
                 ChosenCell.visited = True
-                TrackPlacedColor(ChosenCell)
+                TrackColor(ChosenCell)
 
 def BinaryTreeButton():
 
@@ -258,8 +264,6 @@ def PrimsAlgorithm():
             Cell = ChosenFrontiere
 
         
-        
-
 def PrimsAlgorithmButton():
     
     if config.AlgoWorking == False:
@@ -275,8 +279,51 @@ def pausePlay():
 
     #print("pausePlay: ", config.pausePlay) #For debugging 
     #print("AlgoWorking: ", config.AlgoWorking) #For debugging
-
 def pauseStall(root):
     while config.pausePlay:
         config.root.after(50, config.canvas.update()) #Every 50 milisecond will check of PausePlay has changed
 
+####################################################################################################
+
+                                #    Debugger - Helps find valid walls
+
+
+####################################################################################################
+def moveUp(event):
+    if config.CurrentCellDebug.WallUp == False and config.CurrentCellDebug.y > 0:
+        config.CurrentCellDebug.RevertColor()
+        config.CurrentCellDebug = config.Grid[config.CurrentCellDebug.y - 1][config.CurrentCellDebug.x]
+        DebuggerColorChange(config.CurrentCellDebug)
+        config.root.after(config.Speed, config.canvas.update())
+
+def moveLeft(event):
+    if config.CurrentCellDebug.WallLeft == False and config.CurrentCellDebug.x > 0:
+        config.CurrentCellDebug.RevertColor()
+        config.CurrentCellDebug = config.Grid[config.CurrentCellDebug.y][config.CurrentCellDebug.x - 1]
+        DebuggerColorChange(config.CurrentCellDebug)
+        config.root.after(config.Speed, config.canvas.update())
+
+def moveDown(event):
+    if config.CurrentCellDebug.WallDown == False and config.CurrentCellDebug.y < config.VCells:
+        config.CurrentCellDebug.RevertColor()
+        config.CurrentCellDebug = config.Grid[config.CurrentCellDebug.y + 1][config.CurrentCellDebug.x]
+        DebuggerColorChange(config.CurrentCellDebug)
+        config.root.after(config.Speed, config.canvas.update())
+
+def moveRight(event):
+    if config.CurrentCellDebug.WallRight == False and config.CurrentCellDebug.x < config.HCells:
+        config.CurrentCellDebug.RevertColor()
+        config.CurrentCellDebug = config.Grid[config.CurrentCellDebug.y][config.CurrentCellDebug.x + 1]
+        DebuggerColorChange(config.CurrentCellDebug)
+        config.root.after(config.Speed, config.canvas.update())
+
+def WallDebugger():
+    config.root.bind('<Left>', moveLeft)
+    config.root.bind('<Right>', moveRight)
+    config.root.bind('<Down>', moveDown)
+    config.root.bind('<Up>', moveUp)
+
+def WallDebuggerButton():
+    config.CurrentCellDebug = config.Grid[1][1]
+    WallDebugger()
+####################################################################################################

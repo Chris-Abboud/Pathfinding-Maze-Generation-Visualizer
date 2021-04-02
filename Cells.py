@@ -21,8 +21,12 @@ class Cell():
         self.WallRight = True
     
     def ChangeColor(self):
-        self.canvas.itemconfig(self.SquareCell, fill = "White")
+        self.color = "White"
+        self.canvas.itemconfig(self.SquareCell, fill = self.color)
     
+    def RevertColor(self):
+        self.canvas.itemconfig(self.SquareCell, fill = self.color)
+
     def deleteTopWall(self):
         self.canvas.delete(self.topWall)
         self.WallUp = False
