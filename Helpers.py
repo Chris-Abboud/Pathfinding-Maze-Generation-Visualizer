@@ -9,8 +9,8 @@ def adjustSpeed(value):
 
 def replaceGrid():
     config.canvas.delete("all") #Need this to prevent memory leak. Bug where program runs slower after every "clear"
-    for i in range(30):
-        for j in range(60):
+    for i in range(config.VCells):
+        for j in range(config.HCells):
             config.Grid[i][j] = Cell(j ,i, config.canvas, config.SquareSize, config.root, config.BackgroundColor) #The Cell class will automatically draw the squares
 
 
@@ -28,6 +28,7 @@ def TrackPlacedColor(Cell):
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
     else:
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
+        #config.canvas.update()
 
 def TrackColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:
@@ -93,6 +94,13 @@ def openPossibleWall(Cell, Possibilities): #Opens random wall and returns the ce
             return ChosenCell
     return None
 
+def BinaryTreeSortBotRight(possibilities):
+    A = []
+    for combo in possibilities:
+        if combo[1] == "Right" or combo[1] == "Bot":
+            A.append(combo)
+    return A
+
 def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I dont go out of bounds
     PossibleCells = []
     Relation = []
@@ -124,15 +132,15 @@ def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I do
 
     return tuple(zip(PossibleCells, Relation)) #Combines 2 lists to a list of tuples
 
-def FindNext(Cell, Stack, canvas, root): #Recursive Back Track Algo
+def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
     pauseStall(config.root) #Checks if pause is active, ifso, will freeze program until otherwise
     if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
         Cell.visited = True
         while len(config.Stack) != 0:
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
+            TrackPlacedColor(Cell)
 
             if (len(GoodMoves) > 0):
-                TrackPlacedColor(Cell)
                 ChosenCell = openPossibleWall(Cell, GoodMoves)
                 config.Stack.append(ChosenCell)
                 config.root.after(config.Speed, config.canvas.update())
@@ -140,12 +148,12 @@ def FindNext(Cell, Stack, canvas, root): #Recursive Back Track Algo
                 TrackColor(config.Stack[-1])
                 config.Stack.pop()
             if len(config.Stack) > 0:
-                return FindNext(config.Stack[-1], config.Stack, config.canvas, config.root)
+                return RecursiveBackTrack(config.Stack[-1], config.Stack, config.canvas, config.root)
 
 def RecursiveBackTrackButton():
     if config.AlgoWorking == False:
         config.AlgoWorking = True
-        FindNext(config.Stack[0], config.Stack, config.canvas, config.root)
+        RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
         config.AlgoWorking = False
 
 def HuntAndKill(row, Cell, canvas, root):
@@ -181,6 +189,24 @@ def HuntAndKillButton():
         config.AlgoWorking = True
         HuntAndKill(0, config.Stack[0], config.canvas, config.root)
         config.AlgoWorking = False
+
+def BinaryTreeAlgorithm():
+    for i in range(len(config.Grid)):
+        for j in range(len(config.Grid[0])):
+            config.Grid[i][j].visited = True
+            TrackPlacedColor(config.Grid[i][j])
+            config.root.after(config.Speed, config.canvas.update())
+            pauseStall(config.root)
+            PossibleMoves = BinaryTreeSortBotRight(findGoodMoves(config.Grid[i][j], config.Grid, config.canvas) + findBadMoves(config.Grid[i][j], config.Grid, config.canvas))
+            if len(PossibleMoves) > 0:
+                ChosenCell = openPossibleWall(config.Grid[i][j], PossibleMoves)
+                ChosenCell.visited = True
+                TrackPlacedColor(ChosenCell)
+
+def BinaryTreeButton():
+    config.AlgoWorking = True
+    BinaryTreeAlgorithm()
+    config.AlgoWorking = False
 
 def pausePlay():
     if config.AlgoWorking == True:

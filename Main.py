@@ -22,9 +22,15 @@ Selection.add_cascade(label = "Pause / Play", command = pausePlay)
 
 MazeMenu.add_command(label = "Recursive Back Tracking", command = lambda: RecursiveBackTrackButton()) # Prevents Command from auto running
 MazeMenu.add_command(label = "Hunt and Kill", command = lambda: HuntAndKillButton())
+MazeMenu.add_command(label = "Binary Tree", command = lambda: BinaryTreeButton())
+MazeMenu.add_command(label = "Prims Algorithm", command = lambda: RandomizedPrimsButton())
+MazeMenu.add_command(label = "Ellers Algorithm", command = lambda: EllersAlgorithmButton())
+MazeMenu.add_command(label = "Sidewinder Algorithm", command = lambda: SidewinderButton())
+
+
 
 speedSlider = Scale(config.root, label = "Adjust Speed Here", from_= 0, to = 100, showvalue = 0, resolution = 1, length = 300, orient = HORIZONTAL, command = lambda val: adjustSpeed((val)))
-speedSlider.set(10)
+speedSlider.set(1)
 
 speedSlider.pack()
 
