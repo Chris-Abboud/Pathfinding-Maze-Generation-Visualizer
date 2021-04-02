@@ -28,7 +28,6 @@ def TrackPlacedColor(Cell):
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
     else:
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
-        #config.canvas.update()
 
 def TrackColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:
@@ -151,6 +150,11 @@ def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
                 return RecursiveBackTrack(config.Stack[-1], config.Stack, config.canvas, config.root)
 
 def RecursiveBackTrackButton():
+
+    '''Uses a stack. Keeps pushing to stack as it randomly travels the grid.
+    Once it hits a dead end, keeps popping the stack until we land on a node where we can move
+    in a different direction. Repeat this process'''
+
     if config.AlgoWorking == False:
         config.AlgoWorking = True
         RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
@@ -185,6 +189,12 @@ def HuntAndKill(row, Cell, canvas, root):
                             Finished = True
 
 def HuntAndKillButton():
+
+    '''Similar to recursive back track. Walks grid until finds a dead end.
+    When it finds dead end, walk row then columns until an unvisited node is found.
+    Connect that node first with an adjacent visited node, then repeat
+    the process with the newly retrieved node'''
+
     if config.AlgoWorking == False:
         config.AlgoWorking = True
         HuntAndKill(0, config.Stack[0], config.canvas, config.root)
@@ -204,9 +214,23 @@ def BinaryTreeAlgorithm():
                 TrackPlacedColor(ChosenCell)
 
 def BinaryTreeButton():
-    config.AlgoWorking = True
-    BinaryTreeAlgorithm()
-    config.AlgoWorking = False
+
+    '''Very Simple Algorithm. Has a bias, in this case South East
+    Will walk across all nodes and will open either an east wall or south wall
+    Creates very simple solved maze'''
+
+    if config.AlgoWorking == False:
+        config.AlgoWorking = True
+        BinaryTreeAlgorithm()
+        config.AlgoWorking = False
+
+
+def PrimsAlgorithm():
+    return None
+
+def PrimsAlgorithmButton():
+    return None
+
 
 def pausePlay():
     if config.AlgoWorking == True:
