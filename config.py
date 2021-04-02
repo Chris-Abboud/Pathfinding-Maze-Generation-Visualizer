@@ -36,3 +36,4 @@ canvas.pack()
 Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor) ## This will be used in the findPossibleMoves Method
 Stack = [Grid[0][0]]
 
+

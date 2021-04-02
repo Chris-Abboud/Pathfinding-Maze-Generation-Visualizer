@@ -35,6 +35,11 @@ def TrackColor(Cell):
         config.root.after(config.Speed, config.canvas.update())
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
 
+def ChangeColorBlue(Cell):
+    if config.AlgoWorking:
+        config.canvas.itemconfig(Cell.SquareCell, fill = "Blue")
+
+
 def findBadMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I dont go out of bounds
     PossibleCells = []
     Relation = []
@@ -93,13 +98,6 @@ def openPossibleWall(Cell, Possibilities): #Opens random wall and returns the ce
             return ChosenCell
     return None
 
-def BinaryTreeSortBotRight(possibilities):
-    A = []
-    for combo in possibilities:
-        if combo[1] == "Right" or combo[1] == "Bot":
-            A.append(combo)
-    return A
-
 def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I dont go out of bounds
     PossibleCells = []
     Relation = []
@@ -130,6 +128,13 @@ def findGoodMoves(Cell, Grid, canvas):#Must keep track of Borders to ensure I do
             Relation.append("Top") #Indicates the Top Cell was a free Cell
 
     return tuple(zip(PossibleCells, Relation)) #Combines 2 lists to a list of tuples
+
+def BinaryTreeSortBotRight(possibilities):
+    A = []
+    for combo in possibilities:
+        if combo[1] == "Right" or combo[1] == "Bot":
+            A.append(combo)
+    return A
 
 def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
     pauseStall(config.root) #Checks if pause is active, ifso, will freeze program until otherwise
@@ -226,11 +231,41 @@ def BinaryTreeButton():
 
 
 def PrimsAlgorithm():
-    return None
+
+    Cell = config.Grid[int(config.VCells / 2)][int(config.HCells / 2)]
+    FrontiereSet = [Cell]
+    
+
+    while len(FrontiereSet) > 0:
+        pauseStall(config.root)
+        Cell.ChangeColor()
+        Cell.visited = True
+        FrontiereSet.remove(Cell)
+
+        FrontiereAdjacents = findGoodMoves(Cell, config.Grid, config.canvas)
+        
+        for Combo in FrontiereAdjacents:
+            if not Combo[0] in FrontiereSet: #Prevents double duplicates
+                FrontiereSet.append(Combo[0])
+                ChangeColorBlue(Combo[0])
+
+        if len(FrontiereSet) > 0:
+            config.root.after(config.Speed, config.canvas.update())
+            ChosenFrontiere = random.choice(FrontiereSet)
+            VisitedPossibles = findBadMoves(ChosenFrontiere, config.Grid, config.canvas)
+            openPossibleWall(ChosenFrontiere, VisitedPossibles)
+            
+            Cell = ChosenFrontiere
+
+        
+        
 
 def PrimsAlgorithmButton():
-    return None
-
+    
+    if config.AlgoWorking == False:
+        config.AlgoWorking = True
+        PrimsAlgorithm()
+        config.AlgoWorking = False
 
 def pausePlay():
     if config.AlgoWorking == True:
