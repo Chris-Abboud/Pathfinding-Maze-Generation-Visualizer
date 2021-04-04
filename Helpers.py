@@ -147,15 +147,16 @@ def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
     if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
         Cell.visited = True
         while len(config.Stack) != 0:
-            GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
             TrackPlacedColor(Cell)
+            config.root.after(config.Speed, config.canvas.update())
+            GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
+            ChangeColorBlue(Cell)
 
             if (len(GoodMoves) > 0):
                 ChosenCell = openPossibleWall(Cell, GoodMoves)
                 config.Stack.append(ChosenCell)
-                config.root.after(config.Speed, config.canvas.update())
             else:
-                TrackColor(config.Stack[-1])
+                config.Stack[-1].ChangeColor()
                 config.Stack.pop()
             if len(config.Stack) > 0:
                 return RecursiveBackTrack(config.Stack[-1], config.Stack, config.canvas, config.root)
@@ -262,6 +263,7 @@ def PrimsAlgorithm():
             openPossibleWall(ChosenFrontiere, VisitedPossibles)
             
             Cell = ChosenFrontiere
+            
 
         
 def PrimsAlgorithmButton():
