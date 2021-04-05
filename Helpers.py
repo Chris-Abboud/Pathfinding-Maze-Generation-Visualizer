@@ -27,8 +27,8 @@ def bindDrawingMode():
 def DrawingMode(event):
     if (not config.AlgoWorking and not config.pausePlay) and config.DrawingMode:
         a = getCoordinates(event)
-        if a[0] != config.StartCell.x or a[1] != config.StartCell.y:
-            if a[0] != config.EndCell.x or a[1] != config.EndCell.y:
+        if config.StartCell == None or a[0] != config.StartCell.x or a[1] != config.StartCell.y:
+            if config.EndCell == None or a[0] != config.EndCell.x or a[1] != config.EndCell.y:
                 DrawCell = config.Grid[a[1]][a[0]]
                 ChangeColorTo(DrawCell, "Black")
 
