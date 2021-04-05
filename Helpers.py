@@ -21,16 +21,33 @@ def bindDrawingMode():
     if not config.DrawingMode: 
         replaceDrawCanvas()
         config.DrawingMode = True
+        config.canvas.bind('<B1-Motion>', DrawingMode)
     else:
         config.canvas.bind('<B1-Motion>', DrawingMode)
 
 def DrawingMode(event):
     if (not config.AlgoWorking and not config.pausePlay) and config.DrawingMode:
         a = getCoordinates(event)
+        (x, y) = a
         if config.StartCell == None or a[0] != config.StartCell.x or a[1] != config.StartCell.y:
             if config.EndCell == None or a[0] != config.EndCell.x or a[1] != config.EndCell.y:
-                DrawCell = config.Grid[a[1]][a[0]]
+                DrawCell = config.Grid[y][x]
+
                 ChangeColorTo(DrawCell, "Black")
+                DrawCell.WallUp = True
+                DrawCell.WallDown = True
+                DrawCell.WallRight = True
+                DrawCell.WallLeft = True
+
+                if (x >= 0 and x < config.HCells - 1): #Restricts the horizontal bounds
+                    config.Grid[y][x+1].WallLeft = True
+                if (x >= 1 and x <= config.HCells - 1): #Restricts the horizontal bounds
+                    config.Grid[y][x-1].WallRight = True
+                if (y >= 0 and y < config.VCells - 1):
+                    config.Grid[y+1][x].WallUp = True
+                if (y > 0 and y <= config.VCells - 1):
+                    config.Grid[y-1][x].WallDown = True
+
 
 
 def bindPlaceStart():
@@ -408,7 +425,6 @@ def pauseStall(root):
 
                                 #    Debugger - Helps find valid walls
 
-
 ####################################################################################################
 def moveUp(event):
     if config.CurrentCellDebug.WallUp == False and config.CurrentCellDebug.y > 0:
@@ -439,7 +455,6 @@ def moveRight(event):
         config.root.after(config.Speed, config.canvas.update())
 
 def WallDebugger():
-    print("HELP ME")
     config.root.bind('<Left>', moveLeft)
     config.root.bind('<Right>', moveRight)
     config.root.bind('<Down>', moveDown)
