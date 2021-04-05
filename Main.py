@@ -15,10 +15,13 @@ Selection = Menu(config.root)
 config.root.config(menu = Selection)
 
 PlaceStartButton = Button(config.root, text = "Place/ Replace Start Cell", background = "#4cdfff", command = bindPlaceStart)
-PlaceStartButton.place(x = 140, y = config.CanvasHeight + 15)
+PlaceStartButton.place(x = 30, y = config.CanvasHeight + 15)
 
 PlaceEndButton = Button(config.root, text = "Place/Replace End Cell", background = "#ffb763", command = bindPlaceEnd)
-PlaceEndButton.place(x = 625, y = config.CanvasHeight + 15)
+PlaceEndButton.place(x = 190, y = config.CanvasHeight + 15)
+
+PlaceDrawButton = Button(config.root, text = "Drawing Mode/Draw Walls", background = "Black", fg = "White", command = bindDrawingMode,)
+PlaceDrawButton.place(x = 725, y = config.CanvasHeight + 15)
 
 MazeMenu = Menu(Selection, tearoff=False) #Menu for Maze Generation Algorithms
 PathFindingMenu = Menu(Selection, tearoff = False) #PathFinding Algos
@@ -42,10 +45,10 @@ PathFindingMenu.add_command(label = "D*")
 PathFindingMenu.add_command(label = "Breadth First Search")
 
 
-speedSlider = Scale(config.root, label = "Adjust Speed Here", from_= 0, to = 100, showvalue = 0, resolution = 1, length = 300, orient = HORIZONTAL, command = lambda val: adjustSpeed((val)))
+speedSlider = Scale(config.root, label = "Adjust Speed Here", from_= 0, to = 150, showvalue = 0, resolution = 1, length = 350, orient = HORIZONTAL, command = lambda val: adjustSpeed((val)))
 speedSlider.set(1)
 
-speedSlider.pack()
+speedSlider.place(x = 350, y = config.CanvasHeight + 1)
 
 
 config.root.option_add('*tearOff',False)

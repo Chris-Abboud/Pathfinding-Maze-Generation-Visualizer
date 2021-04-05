@@ -10,29 +10,54 @@ def getCoordinates(event):
     
     return (x,y)
 
+def replaceDrawCanvas():
+    print(config.DrawingMode)
+    config.canvas.delete("all") #Need this to prevent memory leak. Bug where program runs slower after every "clear"
+    for i in range(config.VCells):
+        for j in range(config.HCells):
+            config.Grid[i][j] = Cell(j ,i, config.canvas, config.SquareSize, config.root, "White", True) #The Cell class will automatically draw the squares
+
+def bindDrawingMode():
+    if not config.DrawingMode: 
+        replaceDrawCanvas()
+        config.DrawingMode = True
+    else:
+        config.canvas.bind('<B1-Motion>', DrawingMode)
+
+def DrawingMode(event):
+    if (not config.AlgoWorking and not config.pausePlay) and config.DrawingMode:
+        a = getCoordinates(event)
+        if a[0] != config.StartCell.x or a[1] != config.StartCell.y:
+            if a[0] != config.EndCell.x or a[1] != config.EndCell.y:
+                DrawCell = config.Grid[a[1]][a[0]]
+                ChangeColorTo(DrawCell, "Black")
+
+
 def bindPlaceStart():
+    config.canvas.unbind('<B1-Motion>')
     config.canvas.bind('<Button-1>', PlaceStart)
 
 def PlaceStart(event):
-    if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)):
-        config.StartCell.RevertColor()
-
+    if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)): 
+        if config.StartCell != None: config.StartCell.RevertColor()
         a = getCoordinates(event)
         config.StartCell = config.Grid[a[1]][a[0]]
         config.canvas.itemconfig(config.StartCell.SquareCell, fill= "#4cdfff")
         config.canvas.unbind('<Button-1>')
+        
 
 def bindPlaceEnd():
+    config.canvas.unbind('<B1-Motion>')
     config.canvas.bind('<Button-1>', PlaceEnd)
 
 def PlaceEnd(event):
     if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)):
-        config.EndCell.RevertColor()
-
+        if config.EndCell != None: config.EndCell.RevertColor()
         a = getCoordinates(event)
         config.EndCell = config.Grid[a[1]][a[0]]
         config.canvas.itemconfig(config.EndCell.SquareCell, fill = "#ffb763")
         config.canvas.unbind('<Button-1>')
+
 
 def adjustSpeed(value):
     config.Speed = int(value)
@@ -41,7 +66,7 @@ def replaceGrid():
     config.canvas.delete("all") #Need this to prevent memory leak. Bug where program runs slower after every "clear"
     for i in range(config.VCells):
         for j in range(config.HCells):
-            config.Grid[i][j] = Cell(j ,i, config.canvas, config.SquareSize, config.root, config.BackgroundColor) #The Cell class will automatically draw the squares
+            config.Grid[i][j] = Cell(j ,i, config.canvas, config.SquareSize, config.root, config.BackgroundColor, False) #The Cell class will automatically draw the squares
 
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
@@ -50,6 +75,9 @@ def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
         config.Stack = [config.Grid[0][0]]
         config.AlgoWorking = False
         config.pausePlay = False
+        config.DrawingMode = False
+        config.StartCell = None
+        config.EndCell = None
 
 def TrackPlacedColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:

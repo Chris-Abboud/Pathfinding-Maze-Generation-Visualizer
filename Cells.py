@@ -1,5 +1,5 @@
 class Cell():
-    def __init__(self, x, y, canvas, SquareSize, root, color):
+    def __init__(self, x, y, canvas, SquareSize, root, color, DrawMode):
         self.visited = False 
         self.x = x #X cordinate
         self.y = y #Y cordinate
@@ -7,18 +7,32 @@ class Cell():
         self.canvas = canvas
         self.root = root
 
+        DrawModeBool = True
+        borderColor = "Black"
+
         #Had to create properties for each  wall so that removing a wall is an easy operation
         self.SquareCell = canvas.create_rectangle(x * SquareSize, y * SquareSize, (x+1) * SquareSize, (y+1) * SquareSize, fill = color, outline = "") 
-        self.topWall = canvas.create_line(x * SquareSize, y * SquareSize, (x + 1) * SquareSize, y * SquareSize, fill = "Black")
-        self.botWall = canvas.create_line(x * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = "Black")
-        self.leftWall = canvas.create_line(x * SquareSize, y * SquareSize, x * SquareSize, (y + 1) * SquareSize, fill = "Black")
-        self.rightWall = canvas.create_line((x + 1) * SquareSize, y  * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = "Black")
+
+        if DrawMode:
+            borderColor = "White"
+
+        self.topWall = canvas.create_line(x * SquareSize, y * SquareSize, (x + 1) * SquareSize, y * SquareSize, fill = borderColor)
+        self.botWall = canvas.create_line(x * SquareSize, (y + 1) * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = borderColor)
+        self.leftWall = canvas.create_line(x * SquareSize, y * SquareSize, x * SquareSize, (y + 1) * SquareSize, fill = borderColor)
+        self.rightWall = canvas.create_line((x + 1) * SquareSize, y  * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = borderColor)
         #root.after(1, canvas.update()) #Adds a delay of 1 between each run through, this is just for debugging
 
-        self.WallUp = True
-        self.WallDown = True
-        self.WallLeft = True
-        self.WallRight = True
+
+       
+        if DrawMode:
+            DrawModeBool = False #Meaning if its in draw mode, then there is no walls to start
+
+        self.WallUp = DrawModeBool
+        self.WallDown = DrawModeBool
+        self.WallLeft = DrawModeBool
+        self.WallRight = DrawModeBool
+
+
     
     def ChangeColor(self):
         self.color = "White"
