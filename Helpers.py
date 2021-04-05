@@ -31,6 +31,10 @@ def TrackPlacedColor(Cell):
         config.canvas.itemconfig(Cell.SquareCell, fill = "White")
         Cell.color = "White"
 
+def ChangeColorTo(Cell, color):
+    config.canvas.itemconfig(Cell.SquareCell, fill = color)
+    Cell.color = color
+
 def TrackColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:
         config.canvas.itemconfig(Cell.SquareCell, fill = "Blue")
@@ -147,7 +151,7 @@ def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
     if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
         Cell.visited = True
         while len(config.Stack) != 0:
-            TrackPlacedColor(Cell)
+            ChangeColorTo(Cell, "Orange")
             config.root.after(config.Speed, config.canvas.update())
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
             ChangeColorBlue(Cell)
@@ -156,7 +160,7 @@ def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
                 ChosenCell = openPossibleWall(Cell, GoodMoves)
                 config.Stack.append(ChosenCell)
             else:
-                config.Stack[-1].ChangeColor()
+                ChangeColorTo(config.Stack[-1], "White")
                 config.Stack.pop()
             if len(config.Stack) > 0:
                 return RecursiveBackTrack(config.Stack[-1], config.Stack, config.canvas, config.root)
@@ -181,7 +185,6 @@ def HuntAndKill(row, Cell, canvas, root):
             Cell.visited = True
             TrackPlacedColor(Cell)
             pauseStall(config.root) #Pause / Play Mechanism
-
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
 
             if (len(GoodMoves) > 0): #If It can keep finding new move
@@ -216,8 +219,10 @@ def BinaryTreeAlgorithm():
     for i in range(len(config.Grid)):
         for j in range(len(config.Grid[0])):
             config.Grid[i][j].visited = True
-            TrackPlacedColor(config.Grid[i][j])
+            ChangeColorTo(config.Grid[i][j], "Orange")
             config.root.after(config.Speed, config.canvas.update())
+            ChangeColorTo(config.Grid[i][j], "White")
+
             pauseStall(config.root)
             PossibleMoves = BinaryTreeSortBotRight(findGoodMoves(config.Grid[i][j], config.Grid, config.canvas) + findBadMoves(config.Grid[i][j], config.Grid, config.canvas))
             if len(PossibleMoves) > 0:
@@ -264,14 +269,60 @@ def PrimsAlgorithm():
             
             Cell = ChosenFrontiere
             
-
-        
 def PrimsAlgorithmButton():
-    
+
     if config.AlgoWorking == False:
         config.AlgoWorking = True
         PrimsAlgorithm()
         config.AlgoWorking = False
+
+
+def SidewinderAlgorithm():
+    for i in range(len(config.Grid[0])): #Takes care of first row
+        config.Grid[0][i].visited = True
+        pauseStall(config.root)
+        if i < len(config.Grid[0]) - 1:
+            openPossibleWall(config.Grid[0][i], [[config.Grid[0][i+1], "Right"]])
+        TrackPlacedColor(config.Grid[0][i])
+        
+
+    for i in range(1, len(config.Grid)):
+        TempSet = [config.Grid[i][0]] #Need 2d List as open possible wall takes 2d list
+        config.Grid[i][0].visited = True
+        TrackPlacedColor(config.Grid[i][0])
+        
+
+        for j in range(1, len(config.Grid[0])):
+            config.Grid[i][j].visited = True
+            pauseStall(config.root)
+            MoveForward = random.choice([True, False])
+            if MoveForward:
+                TempSet.append(config.Grid[i][j]) 
+                ChangeColorTo(config.Grid[i][j], "Blue")
+                openPossibleWall(config.Grid[i][j-1], [[config.Grid[i][j], "Right"]])
+            else:
+                for thing in TempSet:
+                    ChangeColorTo(thing, "White")
+                ChosenOpening = random.choice(TempSet)
+                openPossibleWall(ChosenOpening, [[config.Grid[ChosenOpening.y - 1][ChosenOpening.x], "Top"]])
+                TempSet = [config.Grid[i][j]]
+                ChangeColorTo(config.Grid[i][j], "Blue")
+
+            config.root.after(config.Speed, config.canvas.update())
+
+        if len(TempSet) > 0: #This means it stopped on last node
+            ChosenOpening = random.choice(TempSet)
+            openPossibleWall(ChosenOpening, [[config.Grid[ChosenOpening.y-1][ChosenOpening.x], "Top"]])
+            for thing in TempSet:
+                    ChangeColorTo(thing, "White")
+        
+
+def SidewinderButton():
+    if config.AlgoWorking == False:
+        config.AlgoWorking = True
+        SidewinderAlgorithm()
+        config.AlgoWorking = False
+
 
 def pausePlay():
     if config.AlgoWorking == True:

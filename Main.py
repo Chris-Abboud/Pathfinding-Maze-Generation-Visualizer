@@ -15,7 +15,10 @@ Selection = Menu(config.root)
 config.root.config(menu = Selection)
 
 MazeMenu = Menu(Selection, tearoff=False) #Menu for Maze Generation Algorithms
+PathFindingMenu = Menu(Selection, tearoff = False) #PathFinding Algos
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = MazeMenu)
+Selection.add_cascade(label = "Pathfinding Algorithms", menu =  PathFindingMenu)
+
 Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor))
 Selection.add_cascade(label = "Start / Stop", command = pausePlay)
 Selection.add_cascade(label = "Enter Wall Debugger Mode", command = lambda: WallDebugger())
@@ -24,7 +27,6 @@ MazeMenu.add_command(label = "Recursive Back Tracking", command = lambda: Recurs
 MazeMenu.add_command(label = "Hunt and Kill", command = lambda: HuntAndKillButton())
 MazeMenu.add_command(label = "Binary Tree", command = lambda: BinaryTreeButton())
 MazeMenu.add_command(label = "Prims Algorithm", command = lambda: PrimsAlgorithmButton())
-MazeMenu.add_command(label = "Ellers Algorithm", command = lambda: EllersAlgorithmButton())
 MazeMenu.add_command(label = "Sidewinder Algorithm", command = lambda: SidewinderButton())
 
 
