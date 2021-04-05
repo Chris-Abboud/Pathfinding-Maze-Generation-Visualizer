@@ -22,6 +22,7 @@ PlaceEndButton.place(x = 625, y = config.CanvasHeight + 15)
 
 MazeMenu = Menu(Selection, tearoff=False) #Menu for Maze Generation Algorithms
 PathFindingMenu = Menu(Selection, tearoff = False) #PathFinding Algos
+
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = MazeMenu)
 Selection.add_cascade(label = "Pathfinding Algorithms", menu =  PathFindingMenu)
 
@@ -35,6 +36,10 @@ MazeMenu.add_command(label = "Binary Tree", command = lambda: BinaryTreeButton()
 MazeMenu.add_command(label = "Prims Algorithm", command = lambda: PrimsAlgorithmButton())
 MazeMenu.add_command(label = "Sidewinder Algorithm", command = lambda: SidewinderButton())
 
+PathFindingMenu.add_command(label = "Dijkstras")
+PathFindingMenu.add_command(label = "A*")
+PathFindingMenu.add_command(label = "D*")
+PathFindingMenu.add_command(label = "Breadth First Search")
 
 
 speedSlider = Scale(config.root, label = "Adjust Speed Here", from_= 0, to = 100, showvalue = 0, resolution = 1, length = 300, orient = HORIZONTAL, command = lambda val: adjustSpeed((val)))

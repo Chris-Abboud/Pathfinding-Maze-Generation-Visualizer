@@ -248,17 +248,21 @@ def HuntAndKillButton():
 def BinaryTreeAlgorithm():
     for i in range(len(config.Grid)):
         for j in range(len(config.Grid[0])):
-            config.Grid[i][j].visited = True
-            ChangeColorTo(config.Grid[i][j], "Orange")
-            config.root.after(config.Speed, config.canvas.update())
-            ChangeColorTo(config.Grid[i][j], "White")
+            if config.AlgoWorking:
+                config.Grid[i][j].visited = True
+                ChangeColorTo(config.Grid[i][j], "Orange")
+                config.root.after(config.Speed, config.canvas.update())
+                ChangeColorTo(config.Grid[i][j], "White")
 
-            pauseStall(config.root)
-            PossibleMoves = BinaryTreeSortBotRight(findGoodMoves(config.Grid[i][j], config.Grid, config.canvas) + findBadMoves(config.Grid[i][j], config.Grid, config.canvas))
-            if len(PossibleMoves) > 0:
-                ChosenCell = openPossibleWall(config.Grid[i][j], PossibleMoves)
-                ChosenCell.visited = True
-                TrackColor(ChosenCell)
+                pauseStall(config.root)
+                PossibleMoves = BinaryTreeSortBotRight(findGoodMoves(config.Grid[i][j], config.Grid, config.canvas) + findBadMoves(config.Grid[i][j], config.Grid, config.canvas))
+                
+                if len(PossibleMoves) > 0 and config.AlgoWorking: #config.AlgoWOrking is temporary fix to clear error
+                    ChosenCell = openPossibleWall(config.Grid[i][j], PossibleMoves)
+                    ChosenCell.visited = True
+                    TrackColor(ChosenCell)
+            else:
+                return #Shuts off if clear was performed
 
 def BinaryTreeButton():
 
@@ -280,24 +284,27 @@ def PrimsAlgorithm():
 
     while len(FrontiereSet) > 0:
         pauseStall(config.root)
-        Cell.ChangeColor()
-        Cell.visited = True
-        FrontiereSet.remove(Cell)
+        if config.AlgoWorking:
+            Cell.ChangeColor()
+            Cell.visited = True
+            FrontiereSet.remove(Cell)
 
-        FrontiereAdjacents = findGoodMoves(Cell, config.Grid, config.canvas)
-        
-        for Combo in FrontiereAdjacents:
-            if not Combo[0] in FrontiereSet: #Prevents double duplicates
-                FrontiereSet.append(Combo[0])
-                ChangeColorBlue(Combo[0])
-
-        if len(FrontiereSet) > 0:
-            config.root.after(config.Speed, config.canvas.update())
-            ChosenFrontiere = random.choice(FrontiereSet)
-            VisitedPossibles = findBadMoves(ChosenFrontiere, config.Grid, config.canvas)
-            openPossibleWall(ChosenFrontiere, VisitedPossibles)
+            FrontiereAdjacents = findGoodMoves(Cell, config.Grid, config.canvas)
             
-            Cell = ChosenFrontiere
+            for Combo in FrontiereAdjacents:
+                if not Combo[0] in FrontiereSet: #Prevents double duplicates
+                    FrontiereSet.append(Combo[0])
+                    ChangeColorBlue(Combo[0])
+
+            if len(FrontiereSet) > 0:
+                config.root.after(config.Speed, config.canvas.update())
+                ChosenFrontiere = random.choice(FrontiereSet)
+                VisitedPossibles = findBadMoves(ChosenFrontiere, config.Grid, config.canvas)
+                openPossibleWall(ChosenFrontiere, VisitedPossibles)
+                
+                Cell = ChosenFrontiere
+        else:
+            return
             
 def PrimsAlgorithmButton():
 
@@ -309,36 +316,39 @@ def PrimsAlgorithmButton():
 
 def SidewinderAlgorithm():
     for i in range(len(config.Grid[0])): #Takes care of first row
-        config.Grid[0][i].visited = True
         pauseStall(config.root)
-        if i < len(config.Grid[0]) - 1:
-            openPossibleWall(config.Grid[0][i], [[config.Grid[0][i+1], "Right"]])
-        TrackPlacedColor(config.Grid[0][i])
-        
+        if config.AlgoWorking:
+            config.Grid[0][i].visited = True
+            if i < len(config.Grid[0]) - 1:
+                openPossibleWall(config.Grid[0][i], [[config.Grid[0][i+1], "Right"]])
+            TrackPlacedColor(config.Grid[0][i])
+        else:
+            return 
 
     for i in range(1, len(config.Grid)):
         TempSet = [config.Grid[i][0]] #Need 2d List as open possible wall takes 2d list
         config.Grid[i][0].visited = True
         TrackPlacedColor(config.Grid[i][0])
-        
-
         for j in range(1, len(config.Grid[0])):
-            config.Grid[i][j].visited = True
             pauseStall(config.root)
-            MoveForward = random.choice([True, False])
-            if MoveForward:
-                TempSet.append(config.Grid[i][j]) 
-                ChangeColorTo(config.Grid[i][j], "Blue")
-                openPossibleWall(config.Grid[i][j-1], [[config.Grid[i][j], "Right"]])
-            else:
-                for thing in TempSet:
-                    ChangeColorTo(thing, "White")
-                ChosenOpening = random.choice(TempSet)
-                openPossibleWall(ChosenOpening, [[config.Grid[ChosenOpening.y - 1][ChosenOpening.x], "Top"]])
-                TempSet = [config.Grid[i][j]]
-                ChangeColorTo(config.Grid[i][j], "Blue")
+            if config.AlgoWorking:
+                config.Grid[i][j].visited = True
+                MoveForward = random.choice([True, False])
+                if MoveForward:
+                    TempSet.append(config.Grid[i][j]) 
+                    ChangeColorTo(config.Grid[i][j], "Blue")
+                    openPossibleWall(config.Grid[i][j-1], [[config.Grid[i][j], "Right"]])
+                else:
+                    for thing in TempSet:
+                        ChangeColorTo(thing, "White")
+                    ChosenOpening = random.choice(TempSet)
+                    openPossibleWall(ChosenOpening, [[config.Grid[ChosenOpening.y - 1][ChosenOpening.x], "Top"]])
+                    TempSet = [config.Grid[i][j]]
+                    ChangeColorTo(config.Grid[i][j], "Blue")
 
-            config.root.after(config.Speed, config.canvas.update())
+                config.root.after(config.Speed, config.canvas.update())
+            else:
+                return
 
         if len(TempSet) > 0: #This means it stopped on last node
             ChosenOpening = random.choice(TempSet)
