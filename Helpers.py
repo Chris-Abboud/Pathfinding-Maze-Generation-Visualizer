@@ -4,6 +4,36 @@ import random
 import time
 import math
 
+def getCoordinates(event):
+    x = event.x // config.SquareSize
+    y = event.y // config.SquareSize
+    
+    return (x,y)
+
+def bindPlaceStart():
+    config.canvas.bind('<Button-1>', PlaceStart)
+
+def PlaceStart(event):
+    if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)):
+        config.StartCell.RevertColor()
+
+        a = getCoordinates(event)
+        config.StartCell = config.Grid[a[1]][a[0]]
+        config.canvas.itemconfig(config.StartCell.SquareCell, fill= "#4cdfff")
+        config.canvas.unbind('<Button-1>')
+
+def bindPlaceEnd():
+    config.canvas.bind('<Button-1>', PlaceEnd)
+
+def PlaceEnd(event):
+    if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)):
+        config.EndCell.RevertColor()
+
+        a = getCoordinates(event)
+        config.EndCell = config.Grid[a[1]][a[0]]
+        config.canvas.itemconfig(config.EndCell.SquareCell, fill = "#ffb763")
+        config.canvas.unbind('<Button-1>')
+
 def adjustSpeed(value):
     config.Speed = int(value)
 
@@ -371,12 +401,13 @@ def moveRight(event):
         config.root.after(config.Speed, config.canvas.update())
 
 def WallDebugger():
+    print("HELP ME")
     config.root.bind('<Left>', moveLeft)
     config.root.bind('<Right>', moveRight)
     config.root.bind('<Down>', moveDown)
     config.root.bind('<Up>', moveUp)
 
 def WallDebuggerButton():
-    config.CurrentCellDebug = config.Grid[1][1]
+    config.CurrentCellDebug = config.Grid[0][0]
     WallDebugger()
 ####################################################################################################

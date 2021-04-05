@@ -14,6 +14,12 @@ Selection = Menu(config.root)
 
 config.root.config(menu = Selection)
 
+PlaceStartButton = Button(config.root, text = "Place/ Replace Start Cell", background = "#4cdfff", command = bindPlaceStart)
+PlaceStartButton.place(x = 140, y = config.CanvasHeight + 15)
+
+PlaceEndButton = Button(config.root, text = "Place/Replace End Cell", background = "#ffb763", command = bindPlaceEnd)
+PlaceEndButton.place(x = 625, y = config.CanvasHeight + 15)
+
 MazeMenu = Menu(Selection, tearoff=False) #Menu for Maze Generation Algorithms
 PathFindingMenu = Menu(Selection, tearoff = False) #PathFinding Algos
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = MazeMenu)
@@ -21,7 +27,7 @@ Selection.add_cascade(label = "Pathfinding Algorithms", menu =  PathFindingMenu)
 
 Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor))
 Selection.add_cascade(label = "Start / Stop", command = pausePlay)
-Selection.add_cascade(label = "Enter Wall Debugger Mode", command = lambda: WallDebugger())
+Selection.add_cascade(label = "Enter Wall Debugger Mode", command = lambda: WallDebuggerButton())
 
 MazeMenu.add_command(label = "Recursive Back Tracking", command = lambda: RecursiveBackTrackButton()) # Prevents Command from auto running
 MazeMenu.add_command(label = "Hunt and Kill", command = lambda: HuntAndKillButton())

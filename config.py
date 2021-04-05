@@ -38,3 +38,9 @@ Stack = [Grid[0][0]]
 CurrentCellDebug = Grid[1][1]
 WallDebugger = True
 
+StartSearching = False #Detects if button clicked
+StartCell = Grid[0][0]
+
+EndSearching = False #Detects if button clicked
+EndCell = Grid[0][1]
+
