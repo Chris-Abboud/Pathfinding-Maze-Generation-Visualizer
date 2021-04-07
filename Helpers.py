@@ -11,20 +11,21 @@ def getCoordinates(event):
     return (x,y)
 
 def clearWalls():
-    for i in range(len(config.Grid)):
-        for j in range(len(config.Grid[0])):
-            if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell: #Cant use IsWall, edges blead to other cells
-                ChangeColorTo(config.Grid[i][j], "White")
-                config.Grid[i][j].SearchVisited = False
-                config.Grid[i][j].isWall = False
-                config.Grid[i][j].WallUp = False
-                config.Grid[i][j].WallDown = False
-                config.Grid[i][j].WallRight = False
-                config.Grid[i][j].WallLeft = False
-                
-    config.StartCell.SearchVisited = False
-    config.EndCell.SearchVisited = False
-    config.canvas.update()
+    if not config.MazeDrawn:
+        for i in range(len(config.Grid)):
+            for j in range(len(config.Grid[0])):
+                if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell: #Cant use IsWall, edges blead to other cells
+                    ChangeColorTo(config.Grid[i][j], "White")
+                    config.Grid[i][j].SearchVisited = False
+                    config.Grid[i][j].isWall = False
+                    config.Grid[i][j].WallUp = False
+                    config.Grid[i][j].WallDown = False
+                    config.Grid[i][j].WallRight = False
+                    config.Grid[i][j].WallLeft = False
+                    
+        config.StartCell.SearchVisited = False
+        config.EndCell.SearchVisited = False
+        config.canvas.update()
 
 def clearSearch():
     for i in range(len(config.Grid)):
@@ -124,6 +125,7 @@ def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
         config.AlgoWorking = False
         config.pausePlay = False
         config.DrawingMode = False
+        config.MazeDrawn = False
         config.StartCell = config.Grid[0][0]
         config.EndCell = config.Grid[config.VCells -1][config.HCells-1]
 
@@ -280,10 +282,11 @@ def RecursiveBackTrackButton():
     Once it hits a dead end, keeps popping the stack until we land on a node where we can move
     in a different direction. Repeat this process'''
 
-    if config.AlgoWorking == False and not config.DrawingMode:
+    if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
         config.AlgoWorking = False
+        config.MazeDrawn = True
 
 def HuntAndKill(row, Cell, canvas, root):
 
@@ -319,10 +322,11 @@ def HuntAndKillButton():
     Connect that node first with an adjacent visited node, then repeat
     the process with the newly retrieved node'''
 
-    if config.AlgoWorking == False and not config.DrawingMode:
+    if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         HuntAndKill(0, config.Stack[0], config.canvas, config.root)
         config.AlgoWorking = False
+        config.MazeDrawn = True
 
 def BinaryTreeAlgorithm():
     for i in range(len(config.Grid)):
@@ -349,10 +353,11 @@ def BinaryTreeButton():
     Will walk across all nodes and will open either an east wall or south wall
     Creates very simple solved maze'''
 
-    if config.AlgoWorking == False and not config.DrawingMode:
+    if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         BinaryTreeAlgorithm()
         config.AlgoWorking = False
+        config.MazeDrawn = True
 
 
 def PrimsAlgorithm():
@@ -387,10 +392,11 @@ def PrimsAlgorithm():
             
 def PrimsAlgorithmButton():
 
-    if config.AlgoWorking == False and not config.DrawingMode:
+    if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         PrimsAlgorithm()
         config.AlgoWorking = False
+        config.MazeDrawn = True
 
 
 def SidewinderAlgorithm():
@@ -437,10 +443,11 @@ def SidewinderAlgorithm():
         
 
 def SidewinderButton():
-    if config.AlgoWorking == False and not config.DrawingMode:
+    if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         SidewinderAlgorithm()
         config.AlgoWorking = False
+        config.MazeDrawn = True
 
 
 def DjikstrasAlgorithm():

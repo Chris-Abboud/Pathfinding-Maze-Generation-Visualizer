@@ -16,6 +16,7 @@ BottomButtonSpace = 60
 SquareSize = 15
 
 AlgoWorking = False
+MazeDrawn = False
 pausePlay = False
 
 Stop = False
