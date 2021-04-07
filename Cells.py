@@ -1,12 +1,13 @@
 class Cell():
     def __init__(self, x, y, canvas, SquareSize, root, color, DrawMode):
         self.visited = False 
+        self.SearchVisited = False
         self.x = x #X cordinate
         self.y = y #Y cordinate
         self.color = color
         self.canvas = canvas
         self.root = root
-
+        self.distance = 10 ** 6 #Use for dijkstras
         DrawModeBool = True
         borderColor = "Black"
 
@@ -26,12 +27,15 @@ class Cell():
        
         if DrawMode:
             DrawModeBool = False #Meaning if its in draw mode, then there is no walls to start
+            self.canvas.delete(self.topWall)
+            self.canvas.delete(self.botWall)
+            self.canvas.delete(self.leftWall)
+            self.canvas.delete(self.rightWall)
 
         self.WallUp = DrawModeBool
         self.WallDown = DrawModeBool
         self.WallLeft = DrawModeBool
         self.WallRight = DrawModeBool
-
 
     
     def ChangeColor(self):

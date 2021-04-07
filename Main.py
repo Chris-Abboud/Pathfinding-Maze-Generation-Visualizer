@@ -14,14 +14,26 @@ Selection = Menu(config.root)
 
 config.root.config(menu = Selection)
 
-PlaceStartButton = Button(config.root, text = "Place/ Replace Start Cell", background = "#4cdfff", command = bindPlaceStart)
-PlaceStartButton.place(x = 30, y = config.CanvasHeight + 15)
+PlaceStartButton = Button(config.root, text = "Place Start Cell", background = "#4cdfff", command = bindPlaceStart)
+PlaceStartButton.place(x = 20, y = config.CanvasHeight + 15)
 
-PlaceEndButton = Button(config.root, text = "Place/Replace End Cell", background = "#ffb763", command = bindPlaceEnd)
-PlaceEndButton.place(x = 190, y = config.CanvasHeight + 15)
+PlaceEndButton = Button(config.root, text = "Place End Cell", background = "#ffb763", command = bindPlaceEnd)
+PlaceEndButton.place(x = 125, y = config.CanvasHeight + 15)
 
-PlaceDrawButton = Button(config.root, text = "Drawing Mode/Draw Walls", background = "Black", fg = "White", command = bindDrawingMode,)
-PlaceDrawButton.place(x = 725, y = config.CanvasHeight + 15)
+speedSlider = Scale(config.root, label = "Adjust Speed Here", from_= 0, to = 150, showvalue = 0, resolution = 1, length = 350, orient = HORIZONTAL, command = lambda val: adjustSpeed((val)))
+speedSlider.set(1)
+
+speedSlider.place(x = 230, y = config.CanvasHeight + 1)
+
+PlaceDrawButton = Button(config.root, text = "Custom Draw Walls", background = "#5a5a5a", fg = "White", command = bindDrawingMode,)
+PlaceDrawButton.place(x = 605, y = config.CanvasHeight + 15)
+
+PlaceClearWall = Button(config.root, text = "Clear Search", background = "#5a5a5a", fg = "White", command = clearSearch,)
+PlaceClearWall.place(x = 730, y = config.CanvasHeight + 15)
+
+PlaceEraseWall = Button(config.root, text = "Clear Walls", background = "#5a5a5a", fg = "White", command = bindDrawingMode,)
+PlaceEraseWall.place(x = 820, y = config.CanvasHeight + 15)
+
 
 MazeMenu = Menu(Selection, tearoff=False) #Menu for Maze Generation Algorithms
 PathFindingMenu = Menu(Selection, tearoff = False) #PathFinding Algos
@@ -39,16 +51,13 @@ MazeMenu.add_command(label = "Binary Tree", command = lambda: BinaryTreeButton()
 MazeMenu.add_command(label = "Prims Algorithm", command = lambda: PrimsAlgorithmButton())
 MazeMenu.add_command(label = "Sidewinder Algorithm", command = lambda: SidewinderButton())
 
-PathFindingMenu.add_command(label = "Dijkstras")
+PathFindingMenu.add_command(label = "Dijkstras", command = lambda: DijkstrasAlgorithmButton())
 PathFindingMenu.add_command(label = "A*")
 PathFindingMenu.add_command(label = "D*")
 PathFindingMenu.add_command(label = "Breadth First Search")
 
 
-speedSlider = Scale(config.root, label = "Adjust Speed Here", from_= 0, to = 150, showvalue = 0, resolution = 1, length = 350, orient = HORIZONTAL, command = lambda val: adjustSpeed((val)))
-speedSlider.set(1)
 
-speedSlider.place(x = 350, y = config.CanvasHeight + 1)
 
 
 config.root.option_add('*tearOff',False)

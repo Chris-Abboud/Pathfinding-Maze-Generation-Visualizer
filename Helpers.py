@@ -10,6 +10,13 @@ def getCoordinates(event):
     
     return (x,y)
 
+def clearSearch():
+    for i in range(len(config.Grid)):
+        for j in range(len(config.Grid[0])):
+            config.Grid[i][j].SearchVisited = False
+            config.Grid[i][j].RevertColor()
+
+
 def replaceDrawCanvas():
     print(config.DrawingMode)
     config.canvas.delete("all") #Need this to prevent memory leak. Bug where program runs slower after every "clear"
@@ -47,7 +54,6 @@ def DrawingMode(event):
                     config.Grid[y+1][x].WallUp = True
                 if (y > 0 and y <= config.VCells - 1):
                     config.Grid[y-1][x].WallDown = True
-
 
 
 def bindPlaceStart():
@@ -93,8 +99,8 @@ def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
         config.AlgoWorking = False
         config.pausePlay = False
         config.DrawingMode = False
-        config.StartCell = None
-        config.EndCell = None
+        config.StartCell = config.Grid[0][0]
+        config.EndCell = config.Grid[config.VCells -1][config.HCells-1]
 
 def TrackPlacedColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:
@@ -109,6 +115,9 @@ def TrackPlacedColor(Cell):
 def ChangeColorTo(Cell, color):
     config.canvas.itemconfig(Cell.SquareCell, fill = color)
     Cell.color = color
+
+def tempChangeColorTo(Cell, color):
+    config.canvas.itemconfig(Cell.SquareCell, fill = color)
 
 def TrackColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:
@@ -246,7 +255,7 @@ def RecursiveBackTrackButton():
     Once it hits a dead end, keeps popping the stack until we land on a node where we can move
     in a different direction. Repeat this process'''
 
-    if config.AlgoWorking == False:
+    if config.AlgoWorking == False and not config.DrawingMode:
         config.AlgoWorking = True
         RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
         config.AlgoWorking = False
@@ -285,7 +294,7 @@ def HuntAndKillButton():
     Connect that node first with an adjacent visited node, then repeat
     the process with the newly retrieved node'''
 
-    if config.AlgoWorking == False:
+    if config.AlgoWorking == False and not config.DrawingMode:
         config.AlgoWorking = True
         HuntAndKill(0, config.Stack[0], config.canvas, config.root)
         config.AlgoWorking = False
@@ -315,7 +324,7 @@ def BinaryTreeButton():
     Will walk across all nodes and will open either an east wall or south wall
     Creates very simple solved maze'''
 
-    if config.AlgoWorking == False:
+    if config.AlgoWorking == False and not config.DrawingMode:
         config.AlgoWorking = True
         BinaryTreeAlgorithm()
         config.AlgoWorking = False
@@ -353,7 +362,7 @@ def PrimsAlgorithm():
             
 def PrimsAlgorithmButton():
 
-    if config.AlgoWorking == False:
+    if config.AlgoWorking == False and not config.DrawingMode:
         config.AlgoWorking = True
         PrimsAlgorithm()
         config.AlgoWorking = False
@@ -403,11 +412,69 @@ def SidewinderAlgorithm():
         
 
 def SidewinderButton():
-    if config.AlgoWorking == False:
+    if config.AlgoWorking == False and not config.DrawingMode:
         config.AlgoWorking = True
         SidewinderAlgorithm()
         config.AlgoWorking = False
 
+
+def DjikstrasAlgorithm():
+    Curr = config.StartCell
+    Curr.distance = 0
+
+    Unvisited = [Curr]
+    End = config.EndCell
+
+    while (Curr != End):
+        X = Curr.x
+        Y = Curr.y
+        pauseStall(config.root)
+
+        if not Curr.WallUp and Y != 0:
+            if not config.Grid[Y-1][X].SearchVisited:
+                config.Grid[Y-1][X].distance = Curr.distance + 1
+                if config.Grid[Y-1][X] not in Unvisited:
+                    Unvisited.append(config.Grid[Y-1][X])
+                    tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
+
+        if not Curr.WallRight and X != config.HCells - 1:
+            if not config.Grid[Y][X+1].SearchVisited:
+                config.Grid[Y][X+1].distance = Curr.distance + 1
+                if config.Grid[Y][X+1] not in Unvisited:
+                    Unvisited.append(config.Grid[Y][X+1])
+                    tempChangeColorTo(config.Grid[Y][X+1], "Blue")
+
+        if not Curr.WallLeft and X != 0:
+            if not config.Grid[Y][X-1].SearchVisited:
+                config.Grid[Y][X-1].distance = Curr.distance + 1
+                if config.Grid[Y][X-1] not in Unvisited:
+                    Unvisited.append(config.Grid[Y][X-1])
+                    tempChangeColorTo(config.Grid[Y][X-1], "Blue")
+
+        if not Curr.WallDown and Y != config.VCells -1:
+            if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
+                config.Grid[Y+1][X].distance = Curr.distance + 1
+                if config.Grid[Y+1][X] not in Unvisited:
+                    Unvisited.append(config.Grid[Y+1][X])
+                    tempChangeColorTo(config.Grid[Y+1][X], "Blue")
+
+        Curr.SearchVisited = True
+        Unvisited.remove(Curr)
+
+        config.root.after(config.Speed, config.canvas.update())
+
+        Curr = Unvisited[0]
+        for Cell in Unvisited:
+            if Cell.distance < Curr.distance:
+                Curr = Cell
+
+    print("FINISHED")
+
+def DijkstrasAlgorithmButton():
+    if config.AlgoWorking == False:
+        config.AlgoWorking = True
+        DjikstrasAlgorithm()
+        config.AlgoWorking = False
 
 def pausePlay():
     if config.AlgoWorking == True:

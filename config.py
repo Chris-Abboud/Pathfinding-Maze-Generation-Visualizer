@@ -36,11 +36,13 @@ canvas.pack()
 Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor, False) ## This will be used in the findPossibleMoves Method
 Stack = [Grid[0][0]]
 CurrentCellDebug = Grid[1][1]
+
 WallDebugger = True
 DrawingMode = False
-StartSearching = False #Detects if button clicked
-StartCell = None
 
+StartSearching = False #Detects if button clicked
 EndSearching = False #Detects if button clicked
-EndCell = None
+
+StartCell = Grid[0][0]
+EndCell = Grid[VCells -1][HCells -1]
 
