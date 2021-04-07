@@ -1,0 +1,3 @@
+List of bugs to fix:
+
+1. When Maze Algo is finished generating, dont let it run again.

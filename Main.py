@@ -28,7 +28,7 @@ speedSlider.place(x = 230, y = config.CanvasHeight + 1)
 PlaceDrawButton = Button(config.root, text = "Custom Draw Walls", background = "#5a5a5a", fg = "White", command = bindDrawingMode,)
 PlaceDrawButton.place(x = 605, y = config.CanvasHeight + 15)
 
-PlaceClearWall = Button(config.root, text = "Clear Search", background = "#5a5a5a", fg = "White", command = clearSearch,)
+PlaceClearWall = Button(config.root, text = "Clear Search", background = "#5a5a5a", fg = "White", command = clearSearch)
 PlaceClearWall.place(x = 730, y = config.CanvasHeight + 15)
 
 PlaceEraseWall = Button(config.root, text = "Clear Walls", background = "#5a5a5a", fg = "White", command = bindDrawingMode,)

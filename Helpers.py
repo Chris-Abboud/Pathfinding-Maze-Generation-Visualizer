@@ -28,6 +28,8 @@ def bindDrawingMode():
     if not config.DrawingMode: 
         replaceDrawCanvas()
         config.DrawingMode = True
+        config.StartCell = config.Grid[0][0]
+        config.EndCell = config.Grid[config.VCells -1][config.HCells -1]
         config.canvas.bind('<B1-Motion>', DrawingMode)
     else:
         config.canvas.bind('<B1-Motion>', DrawingMode)
@@ -65,7 +67,7 @@ def PlaceStart(event):
         if config.StartCell != None: config.StartCell.RevertColor()
         a = getCoordinates(event)
         config.StartCell = config.Grid[a[1]][a[0]]
-        config.canvas.itemconfig(config.StartCell.SquareCell, fill= "#4cdfff")
+        tempChangeColorTo(config.StartCell, "#4cdfff")
         config.canvas.unbind('<Button-1>')
         
 
@@ -78,7 +80,7 @@ def PlaceEnd(event):
         if config.EndCell != None: config.EndCell.RevertColor()
         a = getCoordinates(event)
         config.EndCell = config.Grid[a[1]][a[0]]
-        config.canvas.itemconfig(config.EndCell.SquareCell, fill = "#ffb763")
+        tempChangeColorTo(config.EndCell, "#ffb763")
         config.canvas.unbind('<Button-1>')
 
 
@@ -434,29 +436,33 @@ def DjikstrasAlgorithm():
             if not config.Grid[Y-1][X].SearchVisited:
                 config.Grid[Y-1][X].distance = Curr.distance + 1
                 if config.Grid[Y-1][X] not in Unvisited:
-                    Unvisited.append(config.Grid[Y-1][X])
-                    tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
+                    if config.Grid[Y-1][X] != config.EndCell:
+                        Unvisited.append(config.Grid[Y-1][X])
+                        tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
 
         if not Curr.WallRight and X != config.HCells - 1:
             if not config.Grid[Y][X+1].SearchVisited:
                 config.Grid[Y][X+1].distance = Curr.distance + 1
                 if config.Grid[Y][X+1] not in Unvisited:
-                    Unvisited.append(config.Grid[Y][X+1])
-                    tempChangeColorTo(config.Grid[Y][X+1], "Blue")
+                    if config.Grid[Y][X+1] != config.EndCell:
+                        Unvisited.append(config.Grid[Y][X+1])
+                        tempChangeColorTo(config.Grid[Y][X+1], "Blue")
 
         if not Curr.WallLeft and X != 0:
             if not config.Grid[Y][X-1].SearchVisited:
                 config.Grid[Y][X-1].distance = Curr.distance + 1
                 if config.Grid[Y][X-1] not in Unvisited:
-                    Unvisited.append(config.Grid[Y][X-1])
-                    tempChangeColorTo(config.Grid[Y][X-1], "Blue")
+                    if config.Grid[Y][X-1] != config.EndCell:
+                        Unvisited.append(config.Grid[Y][X-1])
+                        tempChangeColorTo(config.Grid[Y][X-1], "Blue")
 
         if not Curr.WallDown and Y != config.VCells -1:
             if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
                 config.Grid[Y+1][X].distance = Curr.distance + 1
                 if config.Grid[Y+1][X] not in Unvisited:
-                    Unvisited.append(config.Grid[Y+1][X])
-                    tempChangeColorTo(config.Grid[Y+1][X], "Blue")
+                    if config.Grid[Y+1][X] != config.EndCell:
+                        Unvisited.append(config.Grid[Y+1][X])
+                        tempChangeColorTo(config.Grid[Y+1][X], "Blue")
 
         Curr.SearchVisited = True
         Unvisited.remove(Curr)
@@ -526,6 +532,7 @@ def WallDebugger():
     config.root.bind('<Right>', moveRight)
     config.root.bind('<Down>', moveDown)
     config.root.bind('<Up>', moveUp)
+    print(config.CurrentCellDebug.color)
 
 def WallDebuggerButton():
     config.CurrentCellDebug = config.Grid[0][0]
