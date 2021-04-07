@@ -41,7 +41,7 @@ def clearSearch():
 
 
 def replaceDrawCanvas():
-    print(config.DrawingMode)
+
     config.canvas.delete("all") #Need this to prevent memory leak. Bug where program runs slower after every "clear"
     for i in range(config.VCells):
         for j in range(config.HCells):
@@ -61,25 +61,26 @@ def DrawingMode(event):
     if (not config.AlgoWorking and not config.pausePlay) and config.DrawingMode:
         a = getCoordinates(event)
         (x, y) = a
-        if config.StartCell == None or a[0] != config.StartCell.x or a[1] != config.StartCell.y:
-            if config.EndCell == None or a[0] != config.EndCell.x or a[1] != config.EndCell.y:
-                DrawCell = config.Grid[y][x]
+        if x <= config.HCells - 1 and y <= config.VCells -1 and x >= 0 and y >= 0:
+            if config.StartCell == None or a[0] != config.StartCell.x or a[1] != config.StartCell.y:
+                if config.EndCell == None or a[0] != config.EndCell.x or a[1] != config.EndCell.y:
+                    DrawCell = config.Grid[y][x]
 
-                tempChangeColorTo(DrawCell, "Black")
-                DrawCell.isWall = True
-                DrawCell.WallUp = True
-                DrawCell.WallDown = True
-                DrawCell.WallRight = True
-                DrawCell.WallLeft = True
+                    tempChangeColorTo(DrawCell, "Black")
+                    DrawCell.isWall = True
+                    DrawCell.WallUp = True
+                    DrawCell.WallDown = True
+                    DrawCell.WallRight = True
+                    DrawCell.WallLeft = True
 
-                if (x >= 0 and x < config.HCells - 1): #Restricts the horizontal bounds
-                    config.Grid[y][x+1].WallLeft = True
-                if (x >= 1 and x <= config.HCells - 1): #Restricts the horizontal bounds
-                    config.Grid[y][x-1].WallRight = True
-                if (y >= 0 and y < config.VCells - 1):
-                    config.Grid[y+1][x].WallUp = True
-                if (y > 0 and y <= config.VCells - 1):
-                    config.Grid[y-1][x].WallDown = True
+                    if (x >= 0 and x < config.HCells - 1): #Restricts the horizontal bounds
+                        config.Grid[y][x+1].WallLeft = True
+                    if (x >= 1 and x <= config.HCells - 1): #Restricts the horizontal bounds
+                        config.Grid[y][x-1].WallRight = True
+                    if (y >= 0 and y < config.VCells - 1):
+                        config.Grid[y+1][x].WallUp = True
+                    if (y > 0 and y <= config.VCells - 1):
+                        config.Grid[y-1][x].WallDown = True
 
 
 def bindPlaceStart():
@@ -87,12 +88,16 @@ def bindPlaceStart():
     config.canvas.bind('<Button-1>', PlaceStart)
 
 def PlaceStart(event):
-    if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)): 
-        if config.StartCell != None: config.StartCell.RevertColor()
-        a = getCoordinates(event)
-        config.StartCell = config.Grid[a[1]][a[0]]
-        tempChangeColorTo(config.StartCell, "#4cdfff")
-        config.canvas.unbind('<Button-1>')
+    a = getCoordinates(event)
+
+    if not config.Grid[a[1]][a[0]].isWall: #Fixes bug where start / cell was placed on a wall
+        if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)): 
+            if config.StartCell != None: 
+                config.StartCell.RevertColor()
+
+            config.StartCell = config.Grid[a[1]][a[0]]
+            tempChangeColorTo(config.StartCell, "#4cdfff")
+            config.canvas.unbind('<Button-1>')
         
 
 def bindPlaceEnd():
@@ -100,12 +105,15 @@ def bindPlaceEnd():
     config.canvas.bind('<Button-1>', PlaceEnd)
 
 def PlaceEnd(event):
-    if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)):
-        if config.EndCell != None: config.EndCell.RevertColor()
-        a = getCoordinates(event)
-        config.EndCell = config.Grid[a[1]][a[0]]
-        tempChangeColorTo(config.EndCell, "#ffb763")
-        config.canvas.unbind('<Button-1>')
+    a = getCoordinates(event)
+
+    if not config.Grid[a[1]][a[0]].isWall:
+        if (config.pausePlay or (not config.AlgoWorking and not config.pausePlay)):
+            if config.EndCell != None: 
+                config.EndCell.RevertColor()
+            config.EndCell = config.Grid[a[1]][a[0]]
+            tempChangeColorTo(config.EndCell, "#ffb763")
+            config.canvas.unbind('<Button-1>')
 
 
 def adjustSpeed(value):
@@ -504,9 +512,6 @@ def DjikstrasAlgorithm():
         for Cell in Unvisited:
             if Cell.distance < Curr.distance:
                 Curr = Cell
-
-    print("FINISHED")
-
 def DijkstrasAlgorithmButton():
     if config.AlgoWorking == False:
         config.AlgoWorking = True
@@ -563,7 +568,7 @@ def WallDebugger():
     config.root.bind('<Right>', moveRight)
     config.root.bind('<Down>', moveDown)
     config.root.bind('<Up>', moveUp)
-    print(config.CurrentCellDebug.color)
+
 
 def WallDebuggerButton():
     config.CurrentCellDebug = config.Grid[0][0]
