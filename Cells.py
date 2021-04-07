@@ -2,6 +2,8 @@ class Cell():
     def __init__(self, x, y, canvas, SquareSize, root, color, DrawMode):
         self.visited = False 
         self.SearchVisited = False
+        self.isWall = False
+        
         self.x = x #X cordinate
         self.y = y #Y cordinate
         self.color = color

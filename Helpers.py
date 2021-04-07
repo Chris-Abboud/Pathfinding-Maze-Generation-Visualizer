@@ -10,11 +10,33 @@ def getCoordinates(event):
     
     return (x,y)
 
+def clearWalls():
+    for i in range(len(config.Grid)):
+        for j in range(len(config.Grid[0])):
+            if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell: #Cant use IsWall, edges blead to other cells
+                ChangeColorTo(config.Grid[i][j], "White")
+                config.Grid[i][j].SearchVisited = False
+                config.Grid[i][j].isWall = False
+                config.Grid[i][j].WallUp = False
+                config.Grid[i][j].WallDown = False
+                config.Grid[i][j].WallRight = False
+                config.Grid[i][j].WallLeft = False
+                
+    config.StartCell.SearchVisited = False
+    config.EndCell.SearchVisited = False
+    config.canvas.update()
+
 def clearSearch():
     for i in range(len(config.Grid)):
         for j in range(len(config.Grid[0])):
-            config.Grid[i][j].SearchVisited = False
-            config.Grid[i][j].RevertColor()
+            if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell:
+                if not config.Grid[i][j].isWall:
+                    config.Grid[i][j].SearchVisited = False
+                    config.Grid[i][j].RevertColor()
+
+    config.StartCell.SearchVisited = False
+    config.EndCell.SearchVisited = False
+
 
 
 def replaceDrawCanvas():
@@ -42,7 +64,8 @@ def DrawingMode(event):
             if config.EndCell == None or a[0] != config.EndCell.x or a[1] != config.EndCell.y:
                 DrawCell = config.Grid[y][x]
 
-                ChangeColorTo(DrawCell, "Black")
+                tempChangeColorTo(DrawCell, "Black")
+                DrawCell.isWall = True
                 DrawCell.WallUp = True
                 DrawCell.WallDown = True
                 DrawCell.WallRight = True
@@ -436,32 +459,33 @@ def DjikstrasAlgorithm():
             if not config.Grid[Y-1][X].SearchVisited:
                 config.Grid[Y-1][X].distance = Curr.distance + 1
                 if config.Grid[Y-1][X] not in Unvisited:
+                    Unvisited.append(config.Grid[Y-1][X])
                     if config.Grid[Y-1][X] != config.EndCell:
-                        Unvisited.append(config.Grid[Y-1][X])
                         tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
 
         if not Curr.WallRight and X != config.HCells - 1:
             if not config.Grid[Y][X+1].SearchVisited:
                 config.Grid[Y][X+1].distance = Curr.distance + 1
                 if config.Grid[Y][X+1] not in Unvisited:
+                    Unvisited.append(config.Grid[Y][X+1])
+
                     if config.Grid[Y][X+1] != config.EndCell:
-                        Unvisited.append(config.Grid[Y][X+1])
                         tempChangeColorTo(config.Grid[Y][X+1], "Blue")
 
         if not Curr.WallLeft and X != 0:
             if not config.Grid[Y][X-1].SearchVisited:
                 config.Grid[Y][X-1].distance = Curr.distance + 1
                 if config.Grid[Y][X-1] not in Unvisited:
+                    Unvisited.append(config.Grid[Y][X-1])
                     if config.Grid[Y][X-1] != config.EndCell:
-                        Unvisited.append(config.Grid[Y][X-1])
                         tempChangeColorTo(config.Grid[Y][X-1], "Blue")
 
         if not Curr.WallDown and Y != config.VCells -1:
             if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
                 config.Grid[Y+1][X].distance = Curr.distance + 1
                 if config.Grid[Y+1][X] not in Unvisited:
+                    Unvisited.append(config.Grid[Y+1][X])
                     if config.Grid[Y+1][X] != config.EndCell:
-                        Unvisited.append(config.Grid[Y+1][X])
                         tempChangeColorTo(config.Grid[Y+1][X], "Blue")
 
         Curr.SearchVisited = True
