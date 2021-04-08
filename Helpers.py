@@ -4,7 +4,7 @@ import random
 import time
 import math
 import pdb
-import tkinter
+from tkinter import messagebox
 import gc
 
 def all_children(wid):
@@ -485,7 +485,6 @@ def SidewinderButton():
 def DjikstrasAlgorithm():
     Curr = config.StartCell
     Curr.distance = 0
-    Path = [config.StartCell]
     Unvisited = [Curr]
     End = config.EndCell
 
@@ -539,15 +538,18 @@ def DjikstrasAlgorithm():
 
         config.root.after(config.Speed, config.canvas.update())
 
+        if len(Unvisited) == 0: # Meaning no path was found
+            messagebox.showerror("Error Notice: ", "No Path Found :(")
+            break
+
         Curr = Unvisited[0]
         for Cell in Unvisited:
             if Cell.distance < Curr.distance:
-                if Curr in Path:
-                    Path.remove(Curr)
                 Curr = Cell
 
     temp = config.EndCell.parentCell
-    while temp != config.StartCell:
+
+    while temp != config.StartCell and len(Unvisited) != 0:
         tempChangeColorTo(temp, "Yellow")
         config.root.after(10,config.canvas.update())
         temp = temp.parentCell
@@ -556,8 +558,7 @@ def DjikstrasAlgorithm():
 def DijkstrasAlgorithmButton():
     if config.AlgoWorking == False:
         config.AlgoWorking = True
-        A = DjikstrasAlgorithm()
-        print(A)
+        DjikstrasAlgorithm()
         config.AlgoWorking = False
 
 def pausePlay():

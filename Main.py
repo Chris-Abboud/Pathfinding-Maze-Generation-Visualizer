@@ -1,5 +1,7 @@
 ## Initially building the Recursive Backtracking Algorithm for maze generation
 from  tkinter import *
+from tkinter import messagebox
+
 from Cells import *
 from Helpers import *
 
