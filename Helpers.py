@@ -3,6 +3,8 @@ import config
 import random
 import time
 import math
+import pdb
+import gc
 
 def all_children(wid):
     lister = wid.find_all()
@@ -269,28 +271,37 @@ def BinaryTreeSortBotRight(possibilities):
             A.append(combo)
     return A
 
+
 def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
     pauseStall(config.root) #Checks if pause is active, ifso, will freeze program until otherwise
     if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
+        GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
         Cell.visited = True
-        config.root.after(config.Speed, config.canvas.update())
         while len(config.Stack) != 0:
-            ChangeColorTo(Cell, "Orange")
-            all_children(config.canvas)
-
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
-            ChangeColorBlue(Cell)
+            config.root.after(config.Speed, config.canvas.update())
+        
 
             if (len(GoodMoves) > 0):
                 ChosenCell = openPossibleWall(Cell, GoodMoves)
                 config.Stack.append(ChosenCell)
+                ChangeColorBlue(ChosenCell)
+
+                Cell = ChosenCell
             else:
-                ChangeColorTo(config.Stack[-1], "White")
-                config.Stack.pop()
-            if len(config.Stack) > 0:
-                return RecursiveBackTrack(config.Stack[-1], config.Stack, config.canvas, config.root)
-            
-            
+                while True:
+                    Cell = config.Stack.pop()
+                    ChangeColorTo(Cell, "White")
+
+                    GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
+                    if len(GoodMoves) > 0 or len(config.Stack) == 0:
+                        break
+                    config.root.after(config.Speed, config.canvas.update())
+                    
+
+            if len(config.Stack) >= 0:
+                return RecursiveBackTrack(Cell, config.Stack, config.canvas, config.root)
+
 
 def RecursiveBackTrackButton():
 
@@ -301,7 +312,6 @@ def RecursiveBackTrackButton():
     if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
-        print("Did I get back here")
         config.AlgoWorking = False
         config.MazeDrawn = True
         config.root.after(config.Speed, config.canvas.update())
@@ -472,7 +482,7 @@ def SidewinderButton():
 def DjikstrasAlgorithm():
     Curr = config.StartCell
     Curr.distance = 0
-
+    Path = [config.StartCell]
     Unvisited = [Curr]
     End = config.EndCell
 
@@ -522,11 +532,18 @@ def DjikstrasAlgorithm():
         Curr = Unvisited[0]
         for Cell in Unvisited:
             if Cell.distance < Curr.distance:
+                if Curr in Path:
+                    Path.remove(Curr)
                 Curr = Cell
+        Path.append(Cell)
+
+    return len(Path)                
+
 def DijkstrasAlgorithmButton():
     if config.AlgoWorking == False:
         config.AlgoWorking = True
-        DjikstrasAlgorithm()
+        A = DjikstrasAlgorithm()
+        print(A)
         config.AlgoWorking = False
 
 def pausePlay():

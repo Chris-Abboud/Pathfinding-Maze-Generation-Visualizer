@@ -4,11 +4,12 @@ from Cells import *
 from Helpers import *
 
 import random
+import threading
 import config
 import time
 import sys
 
-sys.setrecursionlimit(10**9)
+sys.setrecursionlimit(10**6)
 
 Selection = Menu(config.root)
 

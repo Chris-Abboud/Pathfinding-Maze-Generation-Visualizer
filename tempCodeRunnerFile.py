@@ -1,1 +1,2 @@
-sys.setrecursionlimit(10**9)
+
+import gc

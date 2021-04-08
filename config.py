@@ -35,11 +35,14 @@ root.title('Pathfinding Visualizer developed by Christopher Abboud')
 root.geometry('{}x{}'.format(CanvasWidth, CanvasHeight + BottomButtonSpace)) #Mega canvas size - the mini canvas is within this
 root.resizable(width=False, height=False) #Prevents window from being resized
 
+
 canvas = Canvas(root, height = CanvasHeight + 1, width = CanvasWidth, highlightthickness=0, bg = BackgroundColor) # +1 to canvas height for bottom pixel
 canvas.pack()
 
 Grid = generateGrid(HCells, VCells, [], canvas, root, BackgroundColor, False) ## This will be used in the findPossibleMoves Method
 Stack = [Grid[0][0]]
+
+
 CurrentCellDebug = Grid[1][1]
 
 WallDebugger = True
