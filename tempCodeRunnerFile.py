@@ -1,1 +1,1 @@
-clearSearch
+sys.setrecursionlimit(10**9)

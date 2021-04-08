@@ -4,6 +4,10 @@ import random
 import time
 import math
 
+def all_children(wid):
+    lister = wid.find_all()
+    print(len(lister))
+
 def getCoordinates(event):
     x = event.x // config.SquareSize
     y = event.y // config.SquareSize
@@ -269,9 +273,11 @@ def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
     pauseStall(config.root) #Checks if pause is active, ifso, will freeze program until otherwise
     if config.AlgoWorking: #Needs thsi to fix the pause / play glitch. Where pause then clear then resume starts at where it previously left off
         Cell.visited = True
+        config.root.after(config.Speed, config.canvas.update())
         while len(config.Stack) != 0:
             ChangeColorTo(Cell, "Orange")
-            config.root.after(config.Speed, config.canvas.update())
+            all_children(config.canvas)
+
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
             ChangeColorBlue(Cell)
 
@@ -283,6 +289,8 @@ def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
                 config.Stack.pop()
             if len(config.Stack) > 0:
                 return RecursiveBackTrack(config.Stack[-1], config.Stack, config.canvas, config.root)
+            
+            
 
 def RecursiveBackTrackButton():
 
@@ -293,8 +301,10 @@ def RecursiveBackTrackButton():
     if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
+        print("Did I get back here")
         config.AlgoWorking = False
         config.MazeDrawn = True
+        config.root.after(config.Speed, config.canvas.update())
 
 def HuntAndKill(row, Cell, canvas, root):
 
@@ -305,6 +315,7 @@ def HuntAndKill(row, Cell, canvas, root):
             Cell.visited = True
             TrackPlacedColor(Cell)
             pauseStall(config.root) #Pause / Play Mechanism
+            print(all_children(config.canvas))
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
 
             if (len(GoodMoves) > 0): #If It can keep finding new move

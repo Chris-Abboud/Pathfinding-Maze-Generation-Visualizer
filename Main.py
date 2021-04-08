@@ -8,7 +8,7 @@ import config
 import time
 import sys
 
-sys.setrecursionlimit(10**6)
+sys.setrecursionlimit(10**9)
 
 Selection = Menu(config.root)
 
@@ -55,10 +55,6 @@ PathFindingMenu.add_command(label = "Dijkstras", command = lambda: DijkstrasAlgo
 PathFindingMenu.add_command(label = "A*")
 PathFindingMenu.add_command(label = "D*")
 PathFindingMenu.add_command(label = "Breadth First Search")
-
-
-
-
 
 config.root.option_add('*tearOff',False)
 config.root.mainloop()
