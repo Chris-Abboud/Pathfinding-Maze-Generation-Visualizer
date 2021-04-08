@@ -10,6 +10,9 @@ class Cell():
         self.canvas = canvas
         self.root = root
         self.distance = 10 ** 6 #Use for dijkstras
+        self.parentCell = 0 #Use For dijkstras, sort of a linked list
+
+
         DrawModeBool = True
         borderColor = "Black"
 

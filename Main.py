@@ -42,7 +42,7 @@ PathFindingMenu = Menu(Selection, tearoff = False) #PathFinding Algos
 Selection.add_cascade(label = "Maze Generation Algorithms", menu = MazeMenu)
 Selection.add_cascade(label = "Pathfinding Algorithms", menu =  PathFindingMenu)
 
-Selection.add_cascade(label = "Clear Canvas", command = lambda: clearCanvas(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor))
+Selection.add_cascade(label = "Enable Maze Mode / Reset Maze", command = lambda: clearCanvas(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor))
 Selection.add_cascade(label = "Start / Stop", command = pausePlay)
 Selection.add_cascade(label = "Enter Wall Debugger Mode", command = lambda: WallDebuggerButton())
 

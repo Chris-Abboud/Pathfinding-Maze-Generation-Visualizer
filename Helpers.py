@@ -4,6 +4,7 @@ import random
 import time
 import math
 import pdb
+import tkinter
 import gc
 
 def all_children(wid):
@@ -39,6 +40,7 @@ def clearSearch():
             if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell:
                 if not config.Grid[i][j].isWall:
                     config.Grid[i][j].SearchVisited = False
+                    config.Grid[i][j].parentCell = False
                     config.Grid[i][j].RevertColor()
 
     config.StartCell.SearchVisited = False
@@ -57,6 +59,7 @@ def bindDrawingMode():
     if not config.DrawingMode: 
         replaceDrawCanvas()
         config.DrawingMode = True
+        config.MazeDrawn = False
         config.StartCell = config.Grid[0][0]
         config.EndCell = config.Grid[config.VCells -1][config.HCells -1]
         config.canvas.bind('<B1-Motion>', DrawingMode)
@@ -496,6 +499,8 @@ def DjikstrasAlgorithm():
                 config.Grid[Y-1][X].distance = Curr.distance + 1
                 if config.Grid[Y-1][X] not in Unvisited:
                     Unvisited.append(config.Grid[Y-1][X])
+                    config.Grid[Y-1][X].parentCell = Curr
+                    
                     if config.Grid[Y-1][X] != config.EndCell:
                         tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
 
@@ -504,7 +509,8 @@ def DjikstrasAlgorithm():
                 config.Grid[Y][X+1].distance = Curr.distance + 1
                 if config.Grid[Y][X+1] not in Unvisited:
                     Unvisited.append(config.Grid[Y][X+1])
-
+                    config.Grid[Y][X+1].parentCell = Curr
+                    
                     if config.Grid[Y][X+1] != config.EndCell:
                         tempChangeColorTo(config.Grid[Y][X+1], "Blue")
 
@@ -513,6 +519,8 @@ def DjikstrasAlgorithm():
                 config.Grid[Y][X-1].distance = Curr.distance + 1
                 if config.Grid[Y][X-1] not in Unvisited:
                     Unvisited.append(config.Grid[Y][X-1])
+                    config.Grid[Y][X-1].parentCell = Curr
+                    
                     if config.Grid[Y][X-1] != config.EndCell:
                         tempChangeColorTo(config.Grid[Y][X-1], "Blue")
 
@@ -521,6 +529,8 @@ def DjikstrasAlgorithm():
                 config.Grid[Y+1][X].distance = Curr.distance + 1
                 if config.Grid[Y+1][X] not in Unvisited:
                     Unvisited.append(config.Grid[Y+1][X])
+                    config.Grid[Y+1][X].parentCell = Curr
+
                     if config.Grid[Y+1][X] != config.EndCell:
                         tempChangeColorTo(config.Grid[Y+1][X], "Blue")
 
@@ -535,9 +545,13 @@ def DjikstrasAlgorithm():
                 if Curr in Path:
                     Path.remove(Curr)
                 Curr = Cell
-        Path.append(Cell)
 
-    return len(Path)                
+    temp = config.EndCell.parentCell
+    while temp != config.StartCell:
+        tempChangeColorTo(temp, "Yellow")
+        config.root.after(10,config.canvas.update())
+        temp = temp.parentCell
+                  
 
 def DijkstrasAlgorithmButton():
     if config.AlgoWorking == False:
