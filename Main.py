@@ -55,8 +55,7 @@ MazeMenu.add_command(label = "Sidewinder Algorithm", command = lambda: Sidewinde
 
 PathFindingMenu.add_command(label = "Dijkstras", command = lambda: DijkstrasAlgorithmButton())
 PathFindingMenu.add_command(label = "A*", command = lambda: aStarAlgorithmButton())
-PathFindingMenu.add_command(label = "D*")
-PathFindingMenu.add_command(label = "Breadth First Search")
+
 
 config.root.option_add('*tearOff',False)
 config.root.mainloop()
