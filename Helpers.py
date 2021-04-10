@@ -35,12 +35,13 @@ def clearWalls():
         config.canvas.update()
 
 def clearSearch():
+    print("OK?")
     for i in range(len(config.Grid)):
         for j in range(len(config.Grid[0])):
             if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell:
                 if not config.Grid[i][j].isWall:
                     config.Grid[i][j].SearchVisited = False
-                    config.Grid[i][j].parentCell = False
+                    config.Grid[i][j].parentCell = 0
                     config.Grid[i][j].RevertColor()
 
     config.StartCell.SearchVisited = False
@@ -328,7 +329,6 @@ def HuntAndKill(row, Cell, canvas, root):
             Cell.visited = True
             TrackPlacedColor(Cell)
             pauseStall(config.root) #Pause / Play Mechanism
-            print(all_children(config.canvas))
             GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
 
             if (len(GoodMoves) > 0): #If It can keep finding new move
@@ -560,6 +560,100 @@ def DijkstrasAlgorithmButton():
         config.AlgoWorking = True
         DjikstrasAlgorithm()
         config.AlgoWorking = False
+
+def aStarAlgorithm():
+    Curr = config.StartCell
+    Unvisited = [Curr]
+    Curr.gCost = 0
+    Curr.hCost = abs((config.EndCell.x - Curr.x)) + abs((config.EndCell.y - Curr.y))
+    Curr.fCost = Curr.gCost + Curr.hCost
+
+    while (Curr != config.EndCell):
+        X = Curr.x
+        Y = Curr.y
+        pauseStall(config.root)
+
+        if not Curr.WallUp and Y != 0:
+            if not config.Grid[Y-1][X].SearchVisited:
+                if config.Grid[Y-1][X].gCost > Curr.gCost + 1:
+                    config.Grid[Y-1][X].gCost = Curr.gCost + 1
+
+                config.Grid[Y-1][X].hCost = abs(config.EndCell.x - config.Grid[Y-1][X].x) + abs(config.EndCell.y - config.Grid[Y-1][X].y)
+                config.Grid[Y-1][X].fCost = config.Grid[Y-1][X].gCost + config.Grid[Y-1][X].hCost
+
+                if config.Grid[Y-1][X] not in Unvisited:
+                    Unvisited.append(config.Grid[Y-1][X])
+                    config.Grid[Y-1][X].parentCell = Curr
+                    
+                    if config.Grid[Y-1][X] != config.EndCell:
+                        tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
+
+        if not Curr.WallRight and X != config.HCells - 1:
+            if not config.Grid[Y][X+1].SearchVisited:
+                if config.Grid[Y][X+1].gCost > Curr.gCost +1:
+                    config.Grid[Y][X+1].gCost = Curr.gCost + 1
+
+                config.Grid[Y][X+1].hCost = abs(config.EndCell.x - config.Grid[Y][X+1].x) + abs(config.EndCell.y - config.Grid[Y][X+1].y)
+                config.Grid[Y][X+1].fCost = config.Grid[Y][X+1].gCost + config.Grid[Y][X+1].hCost
+
+                if config.Grid[Y][X+1] not in Unvisited:
+                    Unvisited.append(config.Grid[Y][X+1])
+                    config.Grid[Y][X+1].parentCell = Curr
+                    
+                    if config.Grid[Y][X+1] != config.EndCell:
+                        tempChangeColorTo(config.Grid[Y][X+1], "Blue")
+
+        if not Curr.WallLeft and X != 0:
+            if not config.Grid[Y][X-1].SearchVisited:
+                if config.Grid[Y][X-1].gCost > Curr.gCost +1:
+                    config.Grid[Y][X-1].gCost = Curr.gCost +1
+                config.Grid[Y][X-1].hCost = abs(config.EndCell.x - config.Grid[Y][X-1].x) + abs(config.EndCell.y - config.Grid[Y][X-1].y)
+                config.Grid[Y][X-1].fCost = config.Grid[Y][X-1].gCost + config.Grid[Y][X-1].hCost
+
+                if config.Grid[Y][X-1] not in Unvisited:
+                    Unvisited.append(config.Grid[Y][X-1])
+                    config.Grid[Y][X-1].parentCell = Curr
+                    
+                    if config.Grid[Y][X-1] != config.EndCell:
+                        tempChangeColorTo(config.Grid[Y][X-1], "Blue")
+
+        if not Curr.WallDown and Y != config.VCells -1:
+            if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
+                if config.Grid[Y+1][X].gCost > Curr.gCost +1:
+                    config.Grid[Y+1][X].gCost = Curr.gCost +1
+                config.Grid[Y+1][X].hCost = abs(config.EndCell.x - config.Grid[Y+1][X].x) + abs(config.EndCell.y - config.Grid[Y+1][X].y)
+                config.Grid[Y+1][X].fCost = config.Grid[Y+1][X].gCost + config.Grid[Y+1][X].hCost
+
+                if config.Grid[Y+1][X] not in Unvisited:
+                    Unvisited.append(config.Grid[Y+1][X])
+                    config.Grid[Y+1][X].parentCell = Curr
+
+                    if config.Grid[Y+1][X] != config.EndCell:
+                        tempChangeColorTo(config.Grid[Y+1][X], "Blue")
+
+        Curr.SearchVisited = True
+        Unvisited.remove(Curr)
+
+        config.root.after(config.Speed, config.canvas.update())
+        
+        Curr = Unvisited[0]
+        for Cell in Unvisited:
+            if Cell.fCost < Curr.fCost:
+                Curr = Cell
+
+    temp = config.EndCell.parentCell
+
+    while temp != config.StartCell and len(Unvisited) != 0:
+        tempChangeColorTo(temp, "Yellow")
+        config.root.after(10,config.canvas.update())
+        temp = temp.parentCell
+
+def aStarAlgorithmButton():
+    if config.AlgoWorking == False:
+        config.AlgoWorking = True
+        aStarAlgorithm()
+        config.AlgoWorking = False
+    print("Did I get out")
 
 def pausePlay():
     if config.AlgoWorking == True:

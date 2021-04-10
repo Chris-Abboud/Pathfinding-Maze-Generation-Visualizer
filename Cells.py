@@ -10,7 +10,12 @@ class Cell():
         self.canvas = canvas
         self.root = root
         self.distance = 10 ** 6 #Use for dijkstras
-        self.parentCell = 0 #Use For dijkstras, sort of a linked list
+
+        self.gCost = 10 ** 6 #Distance from start
+        self.hCost = 10 ** 6 #Distance from end
+        self.fCost = 10 ** 6 #Used in A*
+
+        self.parentCell = 0  #Used to Draw the path
 
 
         DrawModeBool = True
@@ -27,8 +32,6 @@ class Cell():
         self.leftWall = canvas.create_line(x * SquareSize, y * SquareSize, x * SquareSize, (y + 1) * SquareSize, fill = borderColor)
         self.rightWall = canvas.create_line((x + 1) * SquareSize, y  * SquareSize, (x + 1) * SquareSize, (y + 1) * SquareSize, fill = borderColor)
         #root.after(1, canvas.update()) #Adds a delay of 1 between each run through, this is just for debugging
-
-
        
         if DrawMode:
             DrawModeBool = False #Meaning if its in draw mode, then there is no walls to start

@@ -6,7 +6,6 @@ from Cells import *
 from Helpers import *
 
 import random
-import threading
 import config
 import time
 import sys
@@ -55,7 +54,7 @@ MazeMenu.add_command(label = "Prims Algorithm", command = lambda: PrimsAlgorithm
 MazeMenu.add_command(label = "Sidewinder Algorithm", command = lambda: SidewinderButton())
 
 PathFindingMenu.add_command(label = "Dijkstras", command = lambda: DijkstrasAlgorithmButton())
-PathFindingMenu.add_command(label = "A*")
+PathFindingMenu.add_command(label = "A*", command = lambda: aStarAlgorithmButton())
 PathFindingMenu.add_command(label = "D*")
 PathFindingMenu.add_command(label = "Breadth First Search")
 

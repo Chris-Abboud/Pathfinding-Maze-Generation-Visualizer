@@ -27,9 +27,6 @@ BackgroundColor = "pink"
 Speed = 0
 Count = 0 #For debugger purposes
 
-print(HCells)
-print(VCells)
-
 root = Tk()
 root.title('Pathfinding Visualizer developed by Christopher Abboud')
 root.geometry('{}x{}'.format(CanvasWidth, CanvasHeight + BottomButtonSpace)) #Mega canvas size - the mini canvas is within this
