@@ -18,7 +18,7 @@ def getCoordinates(event):
     return (x,y)
 
 def clearWalls():
-    if not config.MazeDrawn:
+    if not config.MazeDrawn and not config.AlgoWorking:
         for i in range(len(config.Grid)):
             for j in range(len(config.Grid[0])):
                 if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell: #Cant use IsWall, edges blead to other cells
@@ -35,17 +35,18 @@ def clearWalls():
         config.canvas.update()
 
 def clearSearch():
-    print("OK?")
-    for i in range(len(config.Grid)):
-        for j in range(len(config.Grid[0])):
-            if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell:
-                if not config.Grid[i][j].isWall:
-                    config.Grid[i][j].SearchVisited = False
-                    config.Grid[i][j].parentCell = 0
-                    config.Grid[i][j].RevertColor()
+    
+    if not config.AlgoWorking:
+        for i in range(len(config.Grid)):
+            for j in range(len(config.Grid[0])):
+                if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell:
+                    if not config.Grid[i][j].isWall:
+                        config.Grid[i][j].SearchVisited = False
+                        config.Grid[i][j].parentCell = 0
+                        config.Grid[i][j].RevertColor()
 
-    config.StartCell.SearchVisited = False
-    config.EndCell.SearchVisited = False
+        config.StartCell.SearchVisited = False
+        config.EndCell.SearchVisited = False
 
 
 
@@ -372,7 +373,7 @@ def BinaryTreeAlgorithm():
                 pauseStall(config.root)
                 PossibleMoves = BinaryTreeSortBotRight(findGoodMoves(config.Grid[i][j], config.Grid, config.canvas) + findBadMoves(config.Grid[i][j], config.Grid, config.canvas))
                 
-                if len(PossibleMoves) > 0 and config.AlgoWorking: #config.AlgoWOrking is temporary fix to clear error
+                if len(PossibleMoves) > 0 and config.AlgoWorking: #config.AlgoWorking is temporary fix to clear error
                     ChosenCell = openPossibleWall(config.Grid[i][j], PossibleMoves)
                     ChosenCell.visited = True
                     TrackColor(ChosenCell)
@@ -550,6 +551,7 @@ def DjikstrasAlgorithm():
     temp = config.EndCell.parentCell
 
     while temp != config.StartCell and len(Unvisited) != 0:
+        pauseStall(config.root)
         tempChangeColorTo(temp, "Yellow")
         config.root.after(10,config.canvas.update())
         temp = temp.parentCell
@@ -644,6 +646,7 @@ def aStarAlgorithm():
     temp = config.EndCell.parentCell
 
     while temp != config.StartCell and len(Unvisited) != 0:
+        pauseStall(config.root)
         tempChangeColorTo(temp, "Yellow")
         config.root.after(10,config.canvas.update())
         temp = temp.parentCell
@@ -661,8 +664,8 @@ def pausePlay():
     else:
         config.pausePlay = False
 
-    #print("pausePlay: ", config.pausePlay) #For debugging 
-    #print("AlgoWorking: ", config.AlgoWorking) #For debugging
+    print("pausePlay: ", config.pausePlay) #For debugging 
+    print("AlgoWorking: ", config.AlgoWorking) #For debugging
 def pauseStall(root):
     while config.pausePlay:
         config.root.after(50, config.canvas.update()) #Every 50 milisecond will check of PausePlay has changed
