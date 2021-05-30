@@ -495,44 +495,44 @@ def DjikstrasAlgorithm():
             Y = Curr.y
             pauseStall(config.root)
 
-            if not Curr.WallUp and Y != 0:
+            if not Curr.WallUp and Y != 0  and config.AlgoWorking:
                 if not config.Grid[Y-1][X].SearchVisited:
                     config.Grid[Y-1][X].distance = Curr.distance + 1
                     if config.Grid[Y-1][X] not in Unvisited:
                         Unvisited.append(config.Grid[Y-1][X])
                         config.Grid[Y-1][X].parentCell = Curr
                         
-                        if config.Grid[Y-1][X] != config.EndCell and config.AlgoWorking:
+                        if config.Grid[Y-1][X] != config.EndCell:
                             tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
 
-            if not Curr.WallRight and X != config.HCells - 1:
+            if not Curr.WallRight and X != config.HCells - 1 and config.AlgoWorking:
                 if not config.Grid[Y][X+1].SearchVisited:
                     config.Grid[Y][X+1].distance = Curr.distance + 1
                     if config.Grid[Y][X+1] not in Unvisited:
                         Unvisited.append(config.Grid[Y][X+1])
                         config.Grid[Y][X+1].parentCell = Curr
                         
-                        if config.Grid[Y][X+1] != config.EndCell and config.AlgoWorking:
+                        if config.Grid[Y][X+1] != config.EndCell:
                             tempChangeColorTo(config.Grid[Y][X+1], "Blue")
 
-            if not Curr.WallLeft and X != 0:
+            if not Curr.WallLeft and X != 0 and config.AlgoWorking:
                 if not config.Grid[Y][X-1].SearchVisited:
                     config.Grid[Y][X-1].distance = Curr.distance + 1
                     if config.Grid[Y][X-1] not in Unvisited:
                         Unvisited.append(config.Grid[Y][X-1])
                         config.Grid[Y][X-1].parentCell = Curr
                         
-                        if config.Grid[Y][X-1] != config.EndCell and config.AlgoWorking:
+                        if config.Grid[Y][X-1] != config.EndCell:
                             tempChangeColorTo(config.Grid[Y][X-1], "Blue")
 
-            if not Curr.WallDown and Y != config.VCells -1:
+            if not Curr.WallDown and Y != config.VCells -1 and config.AlgoWorking:
                 if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
                     config.Grid[Y+1][X].distance = Curr.distance + 1
                     if config.Grid[Y+1][X] not in Unvisited:
                         Unvisited.append(config.Grid[Y+1][X])
                         config.Grid[Y+1][X].parentCell = Curr
 
-                        if config.Grid[Y+1][X] != config.EndCell and config.AlgoWorking:
+                        if config.Grid[Y+1][X] != config.EndCell:
                             tempChangeColorTo(config.Grid[Y+1][X], "Blue")
 
             Curr.SearchVisited = True
@@ -574,77 +574,80 @@ def aStarAlgorithm():
     Curr.fCost = Curr.gCost + Curr.hCost
 
     while (Curr != config.EndCell):
-        X = Curr.x
-        Y = Curr.y
-        pauseStall(config.root)
+        if config.AlgoWorking:
+            X = Curr.x
+            Y = Curr.y
+            pauseStall(config.root)
 
-        if not Curr.WallUp and Y != 0:
-            if not config.Grid[Y-1][X].SearchVisited:
-                if config.Grid[Y-1][X].gCost > Curr.gCost + 1:
-                    config.Grid[Y-1][X].gCost = Curr.gCost + 1
+            if not Curr.WallUp and Y != 0 and config.AlgoWorking:
+                if not config.Grid[Y-1][X].SearchVisited:
+                    if config.Grid[Y-1][X].gCost > Curr.gCost + 1:
+                        config.Grid[Y-1][X].gCost = Curr.gCost + 1
 
-                config.Grid[Y-1][X].hCost = abs(config.EndCell.x - config.Grid[Y-1][X].x) + abs(config.EndCell.y - config.Grid[Y-1][X].y)
-                config.Grid[Y-1][X].fCost = config.Grid[Y-1][X].gCost + config.Grid[Y-1][X].hCost
+                    config.Grid[Y-1][X].hCost = abs(config.EndCell.x - config.Grid[Y-1][X].x) + abs(config.EndCell.y - config.Grid[Y-1][X].y)
+                    config.Grid[Y-1][X].fCost = config.Grid[Y-1][X].gCost + config.Grid[Y-1][X].hCost
 
-                if config.Grid[Y-1][X] not in Unvisited:
-                    Unvisited.append(config.Grid[Y-1][X])
-                    config.Grid[Y-1][X].parentCell = Curr
-                    
-                    if config.Grid[Y-1][X] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
+                    if config.Grid[Y-1][X] not in Unvisited:
+                        Unvisited.append(config.Grid[Y-1][X])
+                        config.Grid[Y-1][X].parentCell = Curr
+                        
+                        if config.Grid[Y-1][X] != config.EndCell:
+                            tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
 
-        if not Curr.WallRight and X != config.HCells - 1:
-            if not config.Grid[Y][X+1].SearchVisited:
-                if config.Grid[Y][X+1].gCost > Curr.gCost +1:
-                    config.Grid[Y][X+1].gCost = Curr.gCost + 1
+            if not Curr.WallRight and X != config.HCells - 1 and config.AlgoWorking:
+                if not config.Grid[Y][X+1].SearchVisited:
+                    if config.Grid[Y][X+1].gCost > Curr.gCost +1:
+                        config.Grid[Y][X+1].gCost = Curr.gCost + 1
 
-                config.Grid[Y][X+1].hCost = abs(config.EndCell.x - config.Grid[Y][X+1].x) + abs(config.EndCell.y - config.Grid[Y][X+1].y)
-                config.Grid[Y][X+1].fCost = config.Grid[Y][X+1].gCost + config.Grid[Y][X+1].hCost
+                    config.Grid[Y][X+1].hCost = abs(config.EndCell.x - config.Grid[Y][X+1].x) + abs(config.EndCell.y - config.Grid[Y][X+1].y)
+                    config.Grid[Y][X+1].fCost = config.Grid[Y][X+1].gCost + config.Grid[Y][X+1].hCost
 
-                if config.Grid[Y][X+1] not in Unvisited:
-                    Unvisited.append(config.Grid[Y][X+1])
-                    config.Grid[Y][X+1].parentCell = Curr
-                    
-                    if config.Grid[Y][X+1] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y][X+1], "Blue")
+                    if config.Grid[Y][X+1] not in Unvisited:
+                        Unvisited.append(config.Grid[Y][X+1])
+                        config.Grid[Y][X+1].parentCell = Curr
+                        
+                        if config.Grid[Y][X+1] != config.EndCell:
+                            tempChangeColorTo(config.Grid[Y][X+1], "Blue")
 
-        if not Curr.WallLeft and X != 0:
-            if not config.Grid[Y][X-1].SearchVisited:
-                if config.Grid[Y][X-1].gCost > Curr.gCost +1:
-                    config.Grid[Y][X-1].gCost = Curr.gCost +1
-                config.Grid[Y][X-1].hCost = abs(config.EndCell.x - config.Grid[Y][X-1].x) + abs(config.EndCell.y - config.Grid[Y][X-1].y)
-                config.Grid[Y][X-1].fCost = config.Grid[Y][X-1].gCost + config.Grid[Y][X-1].hCost
+            if not Curr.WallLeft and X != 0 and config.AlgoWorking:
+                if not config.Grid[Y][X-1].SearchVisited:
+                    if config.Grid[Y][X-1].gCost > Curr.gCost +1:
+                        config.Grid[Y][X-1].gCost = Curr.gCost +1
+                    config.Grid[Y][X-1].hCost = abs(config.EndCell.x - config.Grid[Y][X-1].x) + abs(config.EndCell.y - config.Grid[Y][X-1].y)
+                    config.Grid[Y][X-1].fCost = config.Grid[Y][X-1].gCost + config.Grid[Y][X-1].hCost
 
-                if config.Grid[Y][X-1] not in Unvisited:
-                    Unvisited.append(config.Grid[Y][X-1])
-                    config.Grid[Y][X-1].parentCell = Curr
-                    
-                    if config.Grid[Y][X-1] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y][X-1], "Blue")
+                    if config.Grid[Y][X-1] not in Unvisited:
+                        Unvisited.append(config.Grid[Y][X-1])
+                        config.Grid[Y][X-1].parentCell = Curr
+                        
+                        if config.Grid[Y][X-1] != config.EndCell:
+                            tempChangeColorTo(config.Grid[Y][X-1], "Blue")
 
-        if not Curr.WallDown and Y != config.VCells -1:
-            if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
-                if config.Grid[Y+1][X].gCost > Curr.gCost +1:
-                    config.Grid[Y+1][X].gCost = Curr.gCost +1
-                config.Grid[Y+1][X].hCost = abs(config.EndCell.x - config.Grid[Y+1][X].x) + abs(config.EndCell.y - config.Grid[Y+1][X].y)
-                config.Grid[Y+1][X].fCost = config.Grid[Y+1][X].gCost + config.Grid[Y+1][X].hCost
+            if not Curr.WallDown and Y != config.VCells -1 and config.AlgoWorking:
+                if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
+                    if config.Grid[Y+1][X].gCost > Curr.gCost +1:
+                        config.Grid[Y+1][X].gCost = Curr.gCost +1
+                    config.Grid[Y+1][X].hCost = abs(config.EndCell.x - config.Grid[Y+1][X].x) + abs(config.EndCell.y - config.Grid[Y+1][X].y)
+                    config.Grid[Y+1][X].fCost = config.Grid[Y+1][X].gCost + config.Grid[Y+1][X].hCost
 
-                if config.Grid[Y+1][X] not in Unvisited:
-                    Unvisited.append(config.Grid[Y+1][X])
-                    config.Grid[Y+1][X].parentCell = Curr
+                    if config.Grid[Y+1][X] not in Unvisited:
+                        Unvisited.append(config.Grid[Y+1][X])
+                        config.Grid[Y+1][X].parentCell = Curr
 
-                    if config.Grid[Y+1][X] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y+1][X], "Blue")
+                        if config.Grid[Y+1][X] != config.EndCell:
+                            tempChangeColorTo(config.Grid[Y+1][X], "Blue")
 
-        Curr.SearchVisited = True
-        Unvisited.remove(Curr)
+            Curr.SearchVisited = True
+            Unvisited.remove(Curr)
 
-        config.root.after(config.Speed, config.canvas.update())
-        
-        Curr = Unvisited[0]
-        for Cell in Unvisited:
-            if Cell.fCost < Curr.fCost:
-                Curr = Cell
+            config.root.after(config.Speed, config.canvas.update())
+            
+            Curr = Unvisited[0]
+            for Cell in Unvisited:
+                if Cell.fCost < Curr.fCost:
+                    Curr = Cell
+        else:
+            return
 
     temp = config.EndCell.parentCell
 
