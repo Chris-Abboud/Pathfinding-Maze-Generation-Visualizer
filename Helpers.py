@@ -490,63 +490,66 @@ def DjikstrasAlgorithm():
     End = config.EndCell
 
     while (Curr != End):
-        X = Curr.x
-        Y = Curr.y
-        pauseStall(config.root)
+        if config.AlgoWorking: #Fixes bug where continues to draw after ended
+            X = Curr.x
+            Y = Curr.y
+            pauseStall(config.root)
 
-        if not Curr.WallUp and Y != 0:
-            if not config.Grid[Y-1][X].SearchVisited:
-                config.Grid[Y-1][X].distance = Curr.distance + 1
-                if config.Grid[Y-1][X] not in Unvisited:
-                    Unvisited.append(config.Grid[Y-1][X])
-                    config.Grid[Y-1][X].parentCell = Curr
-                    
-                    if config.Grid[Y-1][X] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
+            if not Curr.WallUp and Y != 0:
+                if not config.Grid[Y-1][X].SearchVisited:
+                    config.Grid[Y-1][X].distance = Curr.distance + 1
+                    if config.Grid[Y-1][X] not in Unvisited:
+                        Unvisited.append(config.Grid[Y-1][X])
+                        config.Grid[Y-1][X].parentCell = Curr
+                        
+                        if config.Grid[Y-1][X] != config.EndCell and config.AlgoWorking:
+                            tempChangeColorTo(config.Grid[Y-1][X], "Blue") #Doesnt alter root color. For clear search
 
-        if not Curr.WallRight and X != config.HCells - 1:
-            if not config.Grid[Y][X+1].SearchVisited:
-                config.Grid[Y][X+1].distance = Curr.distance + 1
-                if config.Grid[Y][X+1] not in Unvisited:
-                    Unvisited.append(config.Grid[Y][X+1])
-                    config.Grid[Y][X+1].parentCell = Curr
-                    
-                    if config.Grid[Y][X+1] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y][X+1], "Blue")
+            if not Curr.WallRight and X != config.HCells - 1:
+                if not config.Grid[Y][X+1].SearchVisited:
+                    config.Grid[Y][X+1].distance = Curr.distance + 1
+                    if config.Grid[Y][X+1] not in Unvisited:
+                        Unvisited.append(config.Grid[Y][X+1])
+                        config.Grid[Y][X+1].parentCell = Curr
+                        
+                        if config.Grid[Y][X+1] != config.EndCell and config.AlgoWorking:
+                            tempChangeColorTo(config.Grid[Y][X+1], "Blue")
 
-        if not Curr.WallLeft and X != 0:
-            if not config.Grid[Y][X-1].SearchVisited:
-                config.Grid[Y][X-1].distance = Curr.distance + 1
-                if config.Grid[Y][X-1] not in Unvisited:
-                    Unvisited.append(config.Grid[Y][X-1])
-                    config.Grid[Y][X-1].parentCell = Curr
-                    
-                    if config.Grid[Y][X-1] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y][X-1], "Blue")
+            if not Curr.WallLeft and X != 0:
+                if not config.Grid[Y][X-1].SearchVisited:
+                    config.Grid[Y][X-1].distance = Curr.distance + 1
+                    if config.Grid[Y][X-1] not in Unvisited:
+                        Unvisited.append(config.Grid[Y][X-1])
+                        config.Grid[Y][X-1].parentCell = Curr
+                        
+                        if config.Grid[Y][X-1] != config.EndCell and config.AlgoWorking:
+                            tempChangeColorTo(config.Grid[Y][X-1], "Blue")
 
-        if not Curr.WallDown and Y != config.VCells -1:
-            if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
-                config.Grid[Y+1][X].distance = Curr.distance + 1
-                if config.Grid[Y+1][X] not in Unvisited:
-                    Unvisited.append(config.Grid[Y+1][X])
-                    config.Grid[Y+1][X].parentCell = Curr
+            if not Curr.WallDown and Y != config.VCells -1:
+                if not config.Grid[Y+1][X].SearchVisited: #Ensures Unvisited Node
+                    config.Grid[Y+1][X].distance = Curr.distance + 1
+                    if config.Grid[Y+1][X] not in Unvisited:
+                        Unvisited.append(config.Grid[Y+1][X])
+                        config.Grid[Y+1][X].parentCell = Curr
 
-                    if config.Grid[Y+1][X] != config.EndCell:
-                        tempChangeColorTo(config.Grid[Y+1][X], "Blue")
+                        if config.Grid[Y+1][X] != config.EndCell and config.AlgoWorking:
+                            tempChangeColorTo(config.Grid[Y+1][X], "Blue")
 
-        Curr.SearchVisited = True
-        Unvisited.remove(Curr)
+            Curr.SearchVisited = True
+            Unvisited.remove(Curr)
 
-        config.root.after(config.Speed, config.canvas.update())
+            config.root.after(config.Speed, config.canvas.update())
 
-        if len(Unvisited) == 0: # Meaning no path was found
-            messagebox.showerror("Error Notice: ", "No Path Found :(")
-            break
+            if len(Unvisited) == 0: # Meaning no path was found
+                messagebox.showerror("Error Notice: ", "No Path Found :(")
+                break
 
-        Curr = Unvisited[0]
-        for Cell in Unvisited:
-            if Cell.distance < Curr.distance:
-                Curr = Cell
+            Curr = Unvisited[0]
+            for Cell in Unvisited:
+                if Cell.distance < Curr.distance:
+                    Curr = Cell
+        else:
+            return
 
     temp = config.EndCell.parentCell
 
