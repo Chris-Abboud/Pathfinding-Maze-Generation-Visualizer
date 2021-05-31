@@ -9,7 +9,7 @@ import gc
 
 def all_children(wid):
     lister = wid.find_all()
-    print(len(lister))
+    #print(len(lister))
 
 def getCoordinates(event):
     x = event.x // config.SquareSize
@@ -138,6 +138,7 @@ def replaceGrid():
 
 
 def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
+    #print("Algoworking: ", config.AlgoWorking, "Drawing Mode: ", config.DrawingMode, "MazeDrawn: ", config.MazeDrawn)
     if config.pausePlay or (config.AlgoWorking == False and config.pausePlay == False):
         replaceGrid() ## This will be used in the findPossibleMoves Method
         config.Stack = [config.Grid[0][0]]
@@ -306,6 +307,8 @@ def RecursiveBackTrack(Cell, Stack, canvas, root): #Recursive Back Track Algo
 
             if len(config.Stack) >= 0:
                 return RecursiveBackTrack(Cell, config.Stack, config.canvas, config.root)
+    else:
+        return True
 
 
 def RecursiveBackTrackButton():
@@ -316,9 +319,13 @@ def RecursiveBackTrackButton():
 
     if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
-        RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
+        finished = RecursiveBackTrack(config.Stack[0], config.Stack, config.canvas, config.root)
+        
+        if config.AlgoWorking:
+            config.MazeDrawn = True
+            
         config.AlgoWorking = False
-        config.MazeDrawn = True
+        
         config.root.after(config.Speed, config.canvas.update())
 
 def HuntAndKill(row, Cell, canvas, root):
@@ -327,26 +334,28 @@ def HuntAndKill(row, Cell, canvas, root):
 
     if config.AlgoWorking:
         while not Finished and config.AlgoWorking:
-            Cell.visited = True
-            TrackPlacedColor(Cell)
-            pauseStall(config.root) #Pause / Play Mechanism
-            GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
+                Cell.visited = True
+                TrackPlacedColor(Cell)
+                pauseStall(config.root) #Pause / Play Mechanism
+                GoodMoves = findGoodMoves(Cell, config.Grid, config.canvas)
 
-            if (len(GoodMoves) > 0): #If It can keep finding new move
-                ChosenCell = openPossibleWall(Cell, GoodMoves) #Will open possible wall and return the wall it opened
-                config.root.after(config.Speed, config.canvas.update()) #Slows down the visual
-                Cell = ChosenCell #Reassigns new cell, will keep looping until it hits dead end
-            else: #Else we hunt for a new cell
-                for i in range (row, len(config.Grid)): #Added row so it does not have to start from the 0'th row everytime
-                    for j in range(len(config.Grid[0])):
-                        pauseStall(config.root)
-                        TrackColor(config.Grid[i][j]) #Shows Left to Right scanning
-                        if config.Grid[i][j].visited == False: #Stops when it hits new Node
-                            BadMoves = findBadMoves(config.Grid[i][j], config.Grid, config.canvas)
-                            openPossibleWall(config.Grid[i][j], BadMoves) #Opens a visited wall, calls hunt kill again on the cell just created
-                            return HuntAndKill(i, config.Grid[i][j], config.canvas, config.root) #Feed in I which is the row we left off at
-                        else:
-                            Finished = True
+                if (len(GoodMoves) > 0): #If It can keep finding new move
+                    ChosenCell = openPossibleWall(Cell, GoodMoves) #Will open possible wall and return the wall it opened
+                    config.root.after(config.Speed, config.canvas.update()) #Slows down the visual
+                    Cell = ChosenCell #Reassigns new cell, will keep looping until it hits dead end
+                else: #Else we hunt for a new cell
+                    for i in range (row, len(config.Grid)): #Added row so it does not have to start from the 0'th row everytime
+                        for j in range(len(config.Grid[0])):
+                                pauseStall(config.root)
+                                TrackColor(config.Grid[i][j]) #Shows Left to Right scanning
+                                if config.Grid[i][j].visited == False: #Stops when it hits new Node
+                                    BadMoves = findBadMoves(config.Grid[i][j], config.Grid, config.canvas)
+                                    openPossibleWall(config.Grid[i][j], BadMoves) #Opens a visited wall, calls hunt kill again on the cell just created
+                                    return HuntAndKill(i, config.Grid[i][j], config.canvas, config.root) #Feed in I which is the row we left off at
+                                else:
+                                    Finished = True
+    else:
+        return 
 
 def HuntAndKillButton():
 
@@ -354,12 +363,16 @@ def HuntAndKillButton():
     When it finds dead end, walk row then columns until an unvisited node is found.
     Connect that node first with an adjacent visited node, then repeat
     the process with the newly retrieved node'''
+    print("Algoworking: ", config.AlgoWorking, "Drawing Mode: ", config.DrawingMode, "MazeDrawn: ", config.MazeDrawn)
 
     if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
-        HuntAndKill(0, config.Stack[0], config.canvas, config.root)
+        finished = HuntAndKill(0, config.Stack[0], config.canvas, config.root)
+
+        if config.AlgoWorking:
+            config.MazeDrawn = True
+
         config.AlgoWorking = False
-        config.MazeDrawn = True
 
 def BinaryTreeAlgorithm():
     for i in range(len(config.Grid)):
@@ -389,8 +402,12 @@ def BinaryTreeButton():
     if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         BinaryTreeAlgorithm()
+
+        if config.AlgoWorking:
+            config.MazeDrawn = True
+
         config.AlgoWorking = False
-        config.MazeDrawn = True
+        
 
 
 def PrimsAlgorithm():
@@ -428,8 +445,12 @@ def PrimsAlgorithmButton():
     if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         PrimsAlgorithm()
+
+        if config.AlgoWorking:
+            config.MazeDrawn = True
+
         config.AlgoWorking = False
-        config.MazeDrawn = True
+        
 
 
 def SidewinderAlgorithm():
@@ -479,9 +500,12 @@ def SidewinderButton():
     if config.AlgoWorking == False and not config.DrawingMode and not config.MazeDrawn:
         config.AlgoWorking = True
         SidewinderAlgorithm()
-        config.AlgoWorking = False
-        config.MazeDrawn = True
 
+        if config.AlgoWorking:
+            config.MazeDrawn = True
+
+        config.AlgoWorking = False
+        
 
 def DjikstrasAlgorithm():
     Curr = config.StartCell
@@ -662,16 +686,17 @@ def aStarAlgorithmButton():
         config.AlgoWorking = True
         aStarAlgorithm()
         config.AlgoWorking = False
-    print("Did I get out")
+    
 
 def pausePlay():
+    #print("Algoworking: ", config.AlgoWorking, "Drawing Mode: ", config.DrawingMode, "MazeDrawn: ", config.MazeDrawn)
     if config.AlgoWorking == True:
         config.pausePlay = not config.pausePlay
     else:
         config.pausePlay = False
 
-    print("pausePlay: ", config.pausePlay) #For debugging 
-    print("AlgoWorking: ", config.AlgoWorking) #For debugging
+    #print("pausePlay: ", config.pausePlay) #For debugging 
+    #print("AlgoWorking: ", config.AlgoWorking) #For debugging
 def pauseStall(root):
     while config.pausePlay:
         config.root.after(50, config.canvas.update()) #Every 50 milisecond will check of PausePlay has changed
