@@ -58,7 +58,9 @@ def replaceDrawCanvas():
             config.Grid[i][j] = Cell(j ,i, config.canvas, config.SquareSize, config.root, "White", True) #The Cell class will automatically draw the squares
 
 def bindDrawingMode():
-    if not config.DrawingMode: 
+    if config.JustSearched:
+        messagebox.showerror("Error Notice: ", "Plesse 'Clear Search' before trying to draw new walls!")
+    elif not config.DrawingMode: 
         replaceDrawCanvas()
         config.DrawingMode = True
         config.MazeDrawn = False
@@ -690,7 +692,6 @@ def aStarAlgorithm():
             if len(Unvisited) == 0: # Meaning no path was found
                 messagebox.showerror("Error Notice: ", "No Path Found :(")
                 return
-                
             Curr = Unvisited[0]
             for Cell in Unvisited:
                 if Cell.fCost < Curr.fCost:
