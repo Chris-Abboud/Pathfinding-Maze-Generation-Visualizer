@@ -47,7 +47,8 @@ DrawingMode = False
 
 StartSearching = False #Detects if button clicked
 EndSearching = False #Detects if button clicked
+JustSearched = False
 
-StartCell = Grid[0][0]
-EndCell = Grid[VCells -1][HCells -1]
+StartCell = None
+EndCell = None
 

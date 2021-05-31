@@ -45,6 +45,7 @@ def clearSearch():
                         config.Grid[i][j].parentCell = 0
                         config.Grid[i][j].RevertColor()
 
+        config.JustSearched = False
         config.StartCell.SearchVisited = False
         config.EndCell.SearchVisited = False
 
@@ -62,8 +63,8 @@ def bindDrawingMode():
         replaceDrawCanvas()
         config.DrawingMode = True
         config.MazeDrawn = False
-        config.StartCell = config.Grid[0][0]
-        config.EndCell = config.Grid[config.VCells -1][config.HCells -1]
+        #config.StartCell = config.Grid[0][0]
+        #config.EndCell = config.Grid[config.VCells -1][config.HCells -1]
         config.canvas.bind('<B1-Motion>', DrawingMode)
     else:
         config.canvas.bind('<B1-Motion>', DrawingMode)
@@ -157,8 +158,8 @@ def clearCanvas(HCells, VCells, start, canvas, root, BackgroundColor):
         config.pausePlay = False
         config.DrawingMode = False
         config.MazeDrawn = False
-        config.StartCell = config.Grid[0][0]
-        config.EndCell = config.Grid[config.VCells -1][config.HCells-1]
+        config.StartCell = None
+        config.EndCell = None
 
 def TrackPlacedColor(Cell):
     if config.Speed != 0 and config.AlgoWorking:
@@ -596,10 +597,20 @@ def DjikstrasAlgorithm():
                   
 
 def DijkstrasAlgorithmButton():
-    if config.AlgoWorking == False:
+    if config.JustSearched:
+        messagebox.showerror("Error Notice: ", "Plesse 'Clear Search' before trying to search again!")
+    elif config.StartCell == None:
+        messagebox.showerror("Error Notice: ", "Please place start node before starting a search!")
+    elif config.EndCell == None:
+        messagebox.showerror("Error Notice: ", "Please place end node before starting a serach!")
+
+    elif config.AlgoWorking == False and config.StartCell != None and config.EndCell != None:
         config.AlgoWorking = True
         DjikstrasAlgorithm()
         config.AlgoWorking = False
+        config.JustSearched = True
+    else:
+        return
 
 def aStarAlgorithm():
     Curr = config.StartCell
@@ -693,10 +704,19 @@ def aStarAlgorithm():
         temp = temp.parentCell
 
 def aStarAlgorithmButton():
-    if config.AlgoWorking == False:
+    if config.JustSearched:
+        messagebox.showerror("Error Notice: ", "Plesse 'Clear Search' before trying to search again!")
+    elif config.StartCell == None:
+        messagebox.showerror("Error Notice: ", "Please place start node before starting a search!")
+    elif config.EndCell == None:
+        messagebox.showerror("Error Notice: ", "Please place end node before starting a serach!")
+    elif config.AlgoWorking == False and config.StartCell != None and config.EndCell != None:
         config.AlgoWorking = True
         aStarAlgorithm()
         config.AlgoWorking = False
+        config.JustSearched = True
+    else:
+        return
     
 
 def pausePlay():

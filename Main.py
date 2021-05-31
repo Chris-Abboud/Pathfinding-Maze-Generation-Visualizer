@@ -45,7 +45,7 @@ Selection.add_cascade(label = "Pathfinding Algorithms", menu =  PathFindingMenu)
 
 Selection.add_cascade(label = "Enable Maze Mode / Reset Maze", command = lambda: clearCanvas(config.HCells, config.VCells, [], config.canvas, config.root, config.BackgroundColor))
 Selection.add_cascade(label = "Start / Stop", command = pausePlay)
-Selection.add_cascade(label = "Enter Wall Debugger Mode", command = lambda: WallDebuggerButton())
+#Selection.add_cascade(label = "Enter Wall Debugger Mode", command = lambda: WallDebuggerButton())
 
 MazeMenu.add_command(label = "Recursive Back Tracking", command = lambda: RecursiveBackTrackButton()) # Prevents Command from auto running
 MazeMenu.add_command(label = "Hunt and Kill", command = lambda: HuntAndKillButton())
