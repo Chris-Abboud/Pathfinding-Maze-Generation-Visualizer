@@ -23,15 +23,14 @@ def clearWalls():
             for j in range(len(config.Grid[0])):
                 if config.Grid[i][j] != config.StartCell and config.Grid[i][j] != config.EndCell: #Cant use IsWall, edges blead to other cells
                     ChangeColorTo(config.Grid[i][j], "White")
-                    config.Grid[i][j].SearchVisited = False
-                    config.Grid[i][j].isWall = False
-                    config.Grid[i][j].WallUp = False
-                    config.Grid[i][j].WallDown = False
-                    config.Grid[i][j].WallRight = False
-                    config.Grid[i][j].WallLeft = False
-                    
-        config.StartCell.SearchVisited = False
-        config.EndCell.SearchVisited = False
+
+                config.Grid[i][j].SearchVisited = False
+                config.Grid[i][j].isWall = False
+                config.Grid[i][j].WallUp = False
+                config.Grid[i][j].WallDown = False
+                config.Grid[i][j].WallRight = False
+                config.Grid[i][j].WallLeft = False
+
         config.canvas.update()
 
 def clearSearch():
@@ -578,7 +577,7 @@ def DjikstrasAlgorithm():
 
             if len(Unvisited) == 0: # Meaning no path was found
                 messagebox.showerror("Error Notice: ", "No Path Found :(")
-                break
+                return
 
             Curr = Unvisited[0]
             for Cell in Unvisited:
