@@ -687,6 +687,10 @@ def aStarAlgorithm():
 
             config.root.after(config.Speed, config.canvas.update())
             
+            if len(Unvisited) == 0: # Meaning no path was found
+                messagebox.showerror("Error Notice: ", "No Path Found :(")
+                return
+                
             Curr = Unvisited[0]
             for Cell in Unvisited:
                 if Cell.fCost < Curr.fCost:
