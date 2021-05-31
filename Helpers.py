@@ -95,8 +95,14 @@ def DrawingMode(event):
 
 
 def bindPlaceStart():
-    config.canvas.unbind('<B1-Motion>')
-    config.canvas.bind('<Button-1>', PlaceStart)
+
+    if config.DrawingMode or config.MazeDrawn and not config.AlgoWorking:
+        config.canvas.unbind('<B1-Motion>')
+        config.canvas.bind('<Button-1>', PlaceStart)
+    elif config.AlgoWorking:
+        messagebox.showerror("Error Notice: ", "Please wait for the algorithm to finish working!")
+    else:
+        messagebox.showerror("Error Notice: ", "Please generate/manually draw a maze first before trying to place nodes!")
 
 def PlaceStart(event):
     a = getCoordinates(event)
@@ -112,8 +118,13 @@ def PlaceStart(event):
         
 
 def bindPlaceEnd():
-    config.canvas.unbind('<B1-Motion>')
-    config.canvas.bind('<Button-1>', PlaceEnd)
+    if config.DrawingMode or config.MazeDrawn and not config.AlgoWorking:
+        config.canvas.unbind('<B1-Motion>')
+        config.canvas.bind('<Button-1>', PlaceEnd)
+    elif config.AlgoWorking:
+        messagebox.showerror("Error Notice: ", "Please unpause or wait for the algorithm to finish working!")
+    else:
+        messagebox.showerror("Error Notice: ", "Please generate/manually draw a maze before trying to place nodes!")
 
 def PlaceEnd(event):
     a = getCoordinates(event)
@@ -323,7 +334,7 @@ def RecursiveBackTrackButton():
         
         if config.AlgoWorking:
             config.MazeDrawn = True
-            
+
         config.AlgoWorking = False
         
         config.root.after(config.Speed, config.canvas.update())
