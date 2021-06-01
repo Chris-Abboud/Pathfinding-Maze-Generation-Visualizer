@@ -3,9 +3,7 @@ import config
 import random
 import time
 import math
-import pdb
 from tkinter import messagebox
-import gc
 
 def all_children(wid):
     lister = wid.find_all()
