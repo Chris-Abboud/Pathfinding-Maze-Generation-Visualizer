@@ -38,7 +38,7 @@ Upon first starting the software, you will be greeted with a pink checkerboard l
 
 ---
 
-<p align="left"><img src="Assets/GeneratingAMaze.gif" alt="Generating Maze" width = "750"</p>
+<p align="center"><img src="Assets/GeneratingAMaze.gif" alt="Generating Maze" width = "750"</p>
 
 ---
 
@@ -57,7 +57,7 @@ Sometimes you may want to manually draw your own obstacles. To do so, you must e
 
 If you would like to delete the walls you have drawn, press the "Clear Walls" button. Also note the "Clear Search" button, we will go over this later.
 
-<p align="left"><img src="Assets/DrawingWalls.gif" alt="Drawing Walls" width = "750"</p>
+<p align="center"><img src="Assets/DrawingWalls.gif" alt="Drawing Walls" width = "750"</p>
 
 ---
 
@@ -68,7 +68,7 @@ To place the start cell, first click on the "Place Start Cell" button. After you
 
 You can not place cells on manually drawn walls.
 
-<p align="left"><img src="Assets/PlacingCells.gif" alt="Placing Cells" width = "750"</p>
+<p align="center"><img src="Assets/PlacingCells.gif" alt="Placing Cells" width = "750"</p>
 
 If you are currently in drawing mode, and you would like to draw more walls after you have placed cells, simply click on the "Custom Draw Walls" button to rebind your mouse to click and drag to draw more walls.
 
@@ -81,7 +81,7 @@ If you would like to reposition the cells at any point, this is possible aslong 
 Once you have either generated a maze or manually drawn walls, as well as placed your start and end cells, you can finally use a pathfinding algorithm! To do this, simply click on the "Pathfinding Algorithms" button at the top, and select your desired algorithm. You will now be able to see it visually working! You can see an example of this below.
 
 
-<p align="left"><img src="Assets/PathFinding Algorithms.gif" alt="Pathfinding Algorithms" width = "750"</p>
+<p align="center"><img src="Assets/PathFinding Algorithms.gif" alt="Pathfinding Algorithms" width = "750"</p>
 
 If you would like to run a new pathfinding algorithm, simply click on the "Clear Search" button to clear the data from the search, and then simply select your new algorithm. You are not required to generate a new maze / draw new walls anytime you want to use a differenet pathfinding algorithm. This lets you experiment and see how the different algorithms can compete on the same obstacles.
 
@@ -98,7 +98,7 @@ The other universal button is the Start / Stop button. On any of the maze / path
 
 You can see an example of using the speed slider and the start / stop button below.
 
-<p align="left"><img src="Assets/SpeedSliderPausePlay.gif" alt="Pathfinding Algorithms" width = "750"</p>
+<p align="center"><img src="Assets/SpeedSliderPausePlay.gif" alt="Pathfinding Algorithms" width = "750"</p>
 
 ---
 
