@@ -46,9 +46,9 @@ Upon first starting the software, you will be greeted with a pink checkerboard l
 1. If you have a maze algorithm that is currently working but not finished, first pause the algorithm by pressing the "Start / Stop" button. After the algorithm has paused, then click on the "Enable Maze Mode / Reset Maze" to bring up a new fresh grid.
 2. If the algorithm has already finished, simply click on the "Enable Maze Mode / Reset Maze" button.
 
-Those are all hte instructions for using the maze mode. Here is some important things to note when using a maze generation algorithm. 
+Those are all the instructions for using the maze mode. Here is some important things to note when using a maze generation algorithm. 
 1. You must be in Maze Mode to use a maze generation algorithm.
-2. You can not call a new maze generation algorithm unless the algorithm is paused or the grid is cleared.
+2. You can not call a new maze generation algorithm unless the grid is reset.
 
 ---
 
@@ -102,4 +102,4 @@ You can see an example of using the speed slider and the start / stop button bel
 
 ---
 
-You are now able to visualize many of the popular pathfinding and maze generation algorithms! Experiment and see if you can predict what the algorithms wll do before you run them.
+You are now able to visualize many of the popular pathfinding and maze generation algorithms! Experiment and see if you can predict what the algorithms will do before you run them.
