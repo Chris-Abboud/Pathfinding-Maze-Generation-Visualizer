@@ -58,6 +58,9 @@ def replaceDrawCanvas():
 def bindDrawingMode():
     if config.JustSearched:
         messagebox.showerror("Error Notice: ", "Plesse 'Clear Search' before trying to draw new walls!")
+    if config.AlgoWorking:
+        messagebox.showerror("Error Notice: ", "Please wait for the algorithm to stop working!")
+        
     elif not config.DrawingMode: 
         replaceDrawCanvas()
         config.DrawingMode = True
@@ -96,13 +99,15 @@ def DrawingMode(event):
 
 def bindPlaceStart():
 
-    if config.DrawingMode or config.MazeDrawn and not config.AlgoWorking:
+    if config.DrawingMode or config.MazeDrawn and not config.AlgoWorking and not config.JustSearched:
         config.canvas.unbind('<B1-Motion>')
         config.canvas.bind('<Button-1>', PlaceStart)
     elif config.AlgoWorking:
         messagebox.showerror("Error Notice: ", "Please wait for the algorithm to finish working!")
+    elif config.JustSearched:
+        messagebox.showerror("Error Notice: ", "Please 'Clear Search' before trying to place a start cell")
     else:
-        messagebox.showerror("Error Notice: ", "Please generate/manually draw a maze first before trying to place nodes!")
+        messagebox.showerror("Error Notice: ", "Please generate/manually draw a maze first before trying to place cells!")
 
 def PlaceStart(event):
     a = getCoordinates(event)
@@ -118,13 +123,16 @@ def PlaceStart(event):
         
 
 def bindPlaceEnd():
-    if config.DrawingMode or config.MazeDrawn and not config.AlgoWorking:
+
+    if config.DrawingMode or config.MazeDrawn and not config.AlgoWorking and not config.JustSearched:
         config.canvas.unbind('<B1-Motion>')
         config.canvas.bind('<Button-1>', PlaceEnd)
     elif config.AlgoWorking:
-        messagebox.showerror("Error Notice: ", "Please unpause or wait for the algorithm to finish working!")
+        messagebox.showerror("Error Notice: ", "Please wait for the algorithm to finish working!")
+    elif config.JustSearched:
+        messagebox.showerror("Error Notice :", "Please 'Clear Search' before trying to place an end cell")
     else:
-        messagebox.showerror("Error Notice: ", "Please generate/manually draw a maze before trying to place nodes!")
+        messagebox.showerror("Error Notice: ", "Please generate/manually draw a maze before trying to place cells!")
 
 def PlaceEnd(event):
     a = getCoordinates(event)
@@ -601,7 +609,7 @@ def DijkstrasAlgorithmButton():
     elif config.StartCell == None:
         messagebox.showerror("Error Notice: ", "Please place start node before starting a search!")
     elif config.EndCell == None:
-        messagebox.showerror("Error Notice: ", "Please place end node before starting a serach!")
+        messagebox.showerror("Error Notice: ", "Please place end node before starting a search!")
 
     elif config.AlgoWorking == False and config.StartCell != None and config.EndCell != None:
         config.AlgoWorking = True
@@ -711,7 +719,7 @@ def aStarAlgorithmButton():
     elif config.StartCell == None:
         messagebox.showerror("Error Notice: ", "Please place start node before starting a search!")
     elif config.EndCell == None:
-        messagebox.showerror("Error Notice: ", "Please place end node before starting a serach!")
+        messagebox.showerror("Error Notice: ", "Please place end node before starting a search!")
     elif config.AlgoWorking == False and config.StartCell != None and config.EndCell != None:
         config.AlgoWorking = True
         aStarAlgorithm()
@@ -719,7 +727,6 @@ def aStarAlgorithmButton():
         config.JustSearched = True
     else:
         return
-    
 
 def pausePlay():
     #print("Algoworking: ", config.AlgoWorking, "Drawing Mode: ", config.DrawingMode, "MazeDrawn: ", config.MazeDrawn)
